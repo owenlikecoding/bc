@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bank ui</title>
+    <link rel="stylesheet" href="./main.css">
+</head>
+<body>
+    <header>
+        <h1>bank admin</h1>
+    </header>
+    <div id="signIn">
+        <h2>Sign in</h2><br>
+            <input type="text" placeholder="username" id="username"><br>
+            <input type="password" placeholder="password" id="password"><br>
+            <button class="button-38" id="sub">Sign in</button>
+    </div>
+    <div id="bankUi" style="display: none;">
+        <div id="bank">
+            <h2>Bank</h2>
+            <p id="balance">Balance: $0</p>
+            <p id="bankName">Bank: None</p>
+            <p id="bankId">Bank id: None</p>
+            <p id="bankPin">Bank pin: None</p>
+            <button class="button-38" id="deleteBank">Delete bank</button>
+            <button class="button-38" id="changePin">Change pin</button>
+        </div>
+        <div id="transactions">
+            <h2>Transactions</h2>
+            <p id="transactionsVis">No transactions</p>
+        </div>
+    </div>
+        <script type="module">
+            // firebase 
+                     // Import the functions you need from the SDKs you need
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.12.1/firebase-app.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.12.1/firebase-analytics.js";
+        import { getDatabase, set, ref, get, child, onValue, update, remove } from "https://www.gstatic.com/firebasejs/9.12.1/firebase-database.js"
+        // TODO: Add SDKs for Firebase products that you want to use
+        // https://firebase.google.com/docs/web/setup#available-libraries
+
+        // Your web app's Firebase configuration
+        // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+        const firebaseConfig = {
+            apiKey: "AIzaSyBlgCt1yJFfwKguVfymD5s1uB98Y3mcL2U",
+            authDomain: "burt-coin.firebaseapp.com",
+            projectId: "burt-coin",
+            storageBucket: "burt-coin.appspot.com",
+            messagingSenderId: "942203765915",
+            appId: "1:942203765915:web:ce50f6f18a90216bce723e",
+            measurementId: "G-5CD9ZFYH8K"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const analytics = getAnalytics(app);
+        const db = getDatabase(app);
+        const dbref = ref(db);
+        var username = document.getElementById("username");
+        var password = document.getElementById("password");
+        var sub = document.getElementById("sub");
+        // get the click event from sub
+        if(window.localStorage.getItem("scope") == "l") {
+            document.getElementById("signIn").style.display = "none";
+            document.getElementById("bankUi").style.display = "block";
+        }
+        // delete bank 
+        document.getElementById("deleteBank").addEventListener("click", () => {
+            remove(ref(db, "banks/" + window.localStorage.getItem("bank")));
+            window.localStorage.setItem("scope", "n");
+            window.location.reload();
+        });
+        // change pin
+        document.getElementById("changePin").addEventListener("click", () => {
+            var newPin = prompt("Enter new pin");
+            update(ref(db, "banks/" + window.localStorage.getItem("bank")), {
+                pin: newPin
+            });
+        
+            window.location.reload();
+        });
+        sub.addEventListener("click", function(){
+            // get the value of username and password
+            
+            // check if the username and password are correct
+           get(child(dbref, "banks/" + username.value)).then(function (snapshot) {
+                if (snapshot.exists()) {
+                     console.log(snapshot.val());
+                     if (snapshot.val().password == password.value) {
+                        var signIn = document.getElementById("signIn").style.display = "none";
+                        var bankUi = document.getElementById("bankUi").style.display = "block";
+                        window.localStorage.removeItem("scope")
+                          alert("correct password");
+                     } else {
+                          alert("wrong password");
+                     }
+                } else {
+                     alert("wrong username");
+                }
+              }).catch(function (error) {
+                console.error(error);
+           });
+        });
+        get(child(dbref, "banks/" + window.localStorage.getItem("bank"))).then(function (snapshot) {
+            if (snapshot.exists()) {
+                document.getElementById("balance").innerHTML = "Balance: $" + snapshot.val().balance;
+                document.getElementById("bankName").innerHTML = "Bank: " + snapshot.val().name;
+                document.getElementById("bankId").innerHTML = "Bank id: " + snapshot.val().id;
+                document.getElementById("bankPin").innerHTML = "Bank pin: " + snapshot.val().pin;
+            } 
+             if(snapshot.val().id === undefined) {
+                // make a random 4 digit code
+                var code = Math.floor(Math.random() * 10000);
+                // set the code to the bank
+                update(ref(db, "banks/" + window.localStorage.getItem("bank")), {
+                    id: code
+                });
+                let newPin = prompt("enter a bank pin");
+                update(ref(db, "banks/" + window.localStorage.getItem("bank")), {
+                    pin: newPin
+                });
+            }
+            else {
+                console.log("No data available");
+            }
+        }).catch(function (error) {
+            console.error(error);
+        })
+        </script>
+        <style>
+            @keyframes colorchange {
+                10% {
+                    background: rgb(255, 0, 0);
+
+                }
+                20% {
+                    background: rgb(255, 255, 0);
+                }
+                30% {
+                    background: rgb(0, 255, 0);
+                }
+                40% {
+                    background: rgb(0, 255, 255);
+                }
+                50% {
+                    background: rgb(0, 0, 255);
+                }
+                60% {
+                    background: rgb(255, 0, 255);
+                }
+                70% {
+                    background: rgb(255, 0, 0);
+                }
+                80% {
+                    background: rgb(255, 255, 0);
+                }
+                90% {
+                    background: rgb(0, 255, 0);
+                }
+                100% {
+                    background: rgb(0, 255, 255);
+                }
+
+            }
+           #bankUi {
+            padding: 5%;
+            margin-left: 30%;
+            margin-top: 10%;
+            width: 30%;
+            height: 30%;
+            background: rgb(39, 39, 42);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+           }
+            #signIn {
+                width: 30%;
+                height: 30%;
+                background: rgb(39, 39, 42);
+             
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                margin-left: 35%;
+                margin-top: 15%;
+            }
+            
+            header {
+                height: 10%;
+                width: 100%;
+                animation: colorchange 2s linear infinite;
+                display: flex;
+                justify-content: space-around;
+                align-items: center;
+            }
+            h1 {
+                text-shadow: black 2px 2px;
+            }
+        </style>
+    </header>
+</body>
+</html>

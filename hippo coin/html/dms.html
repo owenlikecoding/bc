@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./main.css">
+    <title>Dms</title>
+</head>
+
+<body>
+
+    </div>
+    <div id="topbar">
+
+
+        <h2>Burt <b>Coin dms</b></h2>
+        <img src="../assets/ocean-sunset-8k.jpeg" alt="pro pic" id="propic">
+
+    </div>
+    <div id="menu"></div>
+    <div id="sidenav"></div>
+    <div id="list">
+        <ul id="boom">
+            <h2>enter the chat code you want to join</h2><br>
+            <input type="number" name="" id="name"><button class="button-38" id="sub">Submit</button>
+            <a id="make">Dont have a chat room create one</a>
+        </ul>
+
+
+    </div>
+    <script src="./menu.js"></script>
+    <style>
+        ul {
+            list-style: none;
+        }
+
+        #list {
+            margin-top: 10%;
+            height: 50%;
+            width: 80%;
+            text-align: center;
+            margin-left: 10%;
+            background-color: rgb(87, 36, 215);
+            box-shadow: rgba(0, 0, 0, 0.25) 0px 54px 55px, rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px, rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px;
+            border-radius: 30px;
+            display: grid;
+            place-items: center;
+        }
+    </style>
+    <script type="module">
+        // Import the functions you need from the SDKs you need
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.12.1/firebase-app.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.12.1/firebase-analytics.js";
+        import { getDatabase, set, ref, get, child } from "https://www.gstatic.com/firebasejs/9.12.1/firebase-database.js"
+        // TODO: Add SDKs for Firebase products that you want to use
+        // https://firebase.google.com/docs/web/setup#available-libraries
+
+        // Your web app's Firebase configuration
+        // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+        const firebaseConfig = {
+            apiKey: "AIzaSyBlgCt1yJFfwKguVfymD5s1uB98Y3mcL2U",
+            authDomain: "burt-coin.firebaseapp.com",
+            projectId: "burt-coin",
+            storageBucket: "burt-coin.appspot.com",
+            messagingSenderId: "942203765915",
+            appId: "1:942203765915:web:ce50f6f18a90216bce723e",
+            measurementId: "G-5CD9ZFYH8K"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const analytics = getAnalytics(app);
+        const db = getDatabase(app);
+        const dbref = ref(db);
+        // dom vars 
+        var name = document.getElementById("name");
+        var sub = document.getElementById("sub");
+        sub.onclick = function () {
+            get(child(dbref, "/" + name.value)).then(function (snapshot) {
+                if (!snapshot.exists()) {
+                    alert("Chat not found")
+                }
+                else {
+                    window.localStorage.setItem("dmid", name.value);
+                    window.location.href = "./dmd.html";
+                }
+            });
+        }
+        var make = document.getElementById("make");
+        if (window.localStorage.getItem("username") == null) {
+            let name = prompt("enter a username you want to use");
+            window.localStorage.setItem("username", name);
+        }
+        make.onclick = function () {
+            var dmid = Math.floor(Math.random() * 1000);
+            var postid = document.getElementsByClassName("postid");
+            window.localStorage.setItem("dmid", dmid);
+            set(ref(db, window.localStorage.getItem("dmid")), {
+                owned: window.localStorage.getItem("username"),
+
+            });
+            setTimeout(function () {
+                window.location.href = "./dmd.html";
+            }, 500);
+        }
+        var propic = document.getElementById("propic");
+        propic.src = window.localStorage.getItem("propic");
+        var script = document.createElement('script');
+        script.src = 'https://code.jquery.com/jquery-3.6.0.min.js';
+        document.getElementsByTagName('head')[0].appendChild(script);
+        var menu = document.getElementById("menu");
+        menu.addEventListener("click", myFunction)
+        function myFunction(x) {
+            menu.classList.toggle("change");
+            $("#sidenav").toggle()
+        }
+        var sidenav = document.getElementById("sidenav").style.display = "none";
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign in</title>
+</head>
+<body>
+    <div class="main">
+        <h2>Sign In 🔑</h2>
+        <input type="text" id="username" placeholder="username">
+        <input type="password" id="password" placeholder="password"><br>
+        <button class="button-38" id="sub">Sign In</button>
+    </div>
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+   
+    <script type="module">
+        // Import the functions you need from the SDKs you need
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.12.1/firebase-app.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.12.1/firebase-analytics.js";
+        import { getDatabase, set, ref, get, child } from "https://www.gstatic.com/firebasejs/9.12.1/firebase-database.js"
+        // TODO: Add SDKs for Firebase products that you want to use
+        // https://firebase.google.com/docs/web/setup#available-libraries
+
+        // Your web app's Firebase configuration
+        // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+        const firebaseConfig = {
+            apiKey: "AIzaSyBlgCt1yJFfwKguVfymD5s1uB98Y3mcL2U",
+            authDomain: "burt-coin.firebaseapp.com",
+            projectId: "burt-coin",
+            storageBucket: "burt-coin.appspot.com",
+            messagingSenderId: "942203765915",
+            appId: "1:942203765915:web:ce50f6f18a90216bce723e",
+            measurementId: "G-5CD9ZFYH8K"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const analytics = getAnalytics(app);
+        const db = getDatabase(app);
+        const dbref = ref(db);
+        var sub = document.getElementById("sub");
+        var username = document.getElementById("username");
+        var password = document.getElementById("password");
+        sub.addEventListener("click", signin);
+        function signin() {
+            get(child(dbref, "users/" + username.value)).then(function (snapshot) {
+                if(!snapshot.exists()) {
+                    swal("ERROR", "user not found", "error");
+                }
+                else if (password.value !== snapshot.val().password) {
+                    swal("ERROR", "incorrect password", "error");
+                }
+                else {
+                    swal("success", "successful signin", "success");
+                    window.localStorage.setItem("username", username.value);
+                    setTimeout(function() {
+                        window.location.href = "./home.html";
+                    }, 1000);
+                }
+            });
+        }
+    </script>
+    <style>
+        * {
+            margin: 0;
+        }
+
+        a {
+            text-decoration: none;
+            color: white;
+            transition: .5s;
+        }
+
+        b {
+            font-family: monofont;
+        }
+
+        a:hover {
+            opacity: .5;
+        }
+
+        @font-face {
+            font-family: mainfont;
+            src: url("../fonts/uni-sans.heavy-caps.otf");
+        }
+
+        @font-face {
+            font-family: monofont;
+            src: url("../fonts/JetBrainsMono-ExtraBold.ttf");
+        }
+
+        .main {
+            background-color: rgb(30, 29, 29);
+            width: 40%;
+            height: 30%;
+            margin-left: 30%;
+            margin-top: 10%;
+            box-shadow: rgba(0, 0, 0, 0.25) 0px 54px 55px, rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px, rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px;
+            display: grid;
+            place-items: center;
+        }
+
+        body {
+            background-image: linear-gradient(135deg, rgb(20, 20, 200), rgb(36, 35, 35));
+            height: 100vh;
+            color: white;
+            font-family: mainfont;
+            overflow: hidden;
+        }
+
+        h2 {
+            font-family: "Inter var", ui-sans-serif, system-ui, -apple-system, system-ui, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji" !important;
+            text-emphasis: bold;
+        }
+
+
+        input {
+            background-color: rgb(30, 29, 29);
+            width: 80%;
+            height: 4vh;
+            text-align: center;
+            font-family: monofont;
+            color: white;
+            margin-top: -2%;
+            border-radius: 12px;
+        }
+
+        button {
+            margin-top: -8%;
+        }
+
+        .button-38 {
+            background-color: #FFFFFF;
+            border: 0;
+            border-radius: .5rem;
+            box-sizing: border-box;
+            color: #111827;
+            font-family: "Inter var", ui-sans-serif, system-ui, -apple-system, system-ui, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+            font-size: .875rem;
+            font-weight: 600;
+            line-height: 1.25rem;
+            padding: .75rem 1rem;
+            text-align: center;
+            text-decoration: none #D1D5DB solid;
+            text-decoration-thickness: auto;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+            cursor: pointer;
+            user-select: none;
+            -webkit-user-select: none;
+            touch-action: manipulation;
+        }
+
+        .button-38:hover {
+            background-color: rgb(249, 250, 251);
+        }
+
+        .button-38:focus {
+            outline: 2px solid transparent;
+            outline-offset: 2px;
+        }
+
+        .button-38:focus-visible {
+            box-shadow: none;
+        }
+    </style>
+</body>
+</html>

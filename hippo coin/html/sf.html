@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Storefronts</title>
+    <link rel="stylesheet" href="./main.css">
+</head>
+<body>
+    <header>
+        <h1>Storefronts</h1>
+    </header>
+    <div class="main">
+        <h2>Storefronts</h2>
+        <button class="button-38" id="create">Create a Storefront</button>
+        <button class="button-38" id="find">Find storefonts</button>
+        <button class="button-38" id="manage">Manage storefronts</button>
+
+        
+    </div>
+    <style>
+        
+        header {
+            background-color: rgb(6, 0, 128);
+            height: 10%;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+        }
+    </style>
+    <script type="module">
+              // Import the functions you need from the SDKs you need
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.12.1/firebase-app.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.12.1/firebase-analytics.js";
+        import { getDatabase, set, ref, get, child, onValue, update } from "https://www.gstatic.com/firebasejs/9.12.1/firebase-database.js"
+        // TODO: Add SDKs for Firebase products that you want to use
+        // https://firebase.google.com/docs/web/setup#available-libraries
+
+        // Your web app's Firebase configuration
+        // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+        const firebaseConfig = {
+            apiKey: "AIzaSyBlgCt1yJFfwKguVfymD5s1uB98Y3mcL2U",
+            authDomain: "burt-coin.firebaseapp.com",
+            projectId: "burt-coin",
+            storageBucket: "burt-coin.appspot.com",
+            messagingSenderId: "942203765915",
+            appId: "1:942203765915:web:ce50f6f18a90216bce723e",
+            measurementId: "G-5CD9ZFYH8K"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const analytics = getAnalytics(app);
+        const db = getDatabase(app);
+        const dbref = ref(db);
+        // dom vars
+        const create = document.getElementById("create");
+        const find = document.getElementById("find");
+        const manage = document.getElementById("manage");   
+        // event listeners
+        create.addEventListener("click", createStorefront);
+        find.addEventListener("click", findStorefront);
+        manage.addEventListener("click", manageStorefront);
+        // functions
+        function createStorefront() {
+            const storefrontName = prompt("What is the name of your storefront?");
+            const storefrontDescription = prompt("What is the description of your storefront?");
+            const password = prompt("What is the password for your storefront?");
+            // ask for products
+            const products = prompt("add a product name (For your first product)");
+            const productImg = prompt("add a product image url");
+            const productPrice = prompt("add a product price");
+            const productDescription = prompt("add a product description");
+            var cn = window.localStorage.getItem("num");
+            if(cn === null) {
+                window.localStorage.setItem("num", 0);
+            }
+            window.localStorage.setItem("storefrontName", storefrontName);
+            var newNum = parseInt(cn) + 1;
+            window.localStorage.setItem("num", newNum);
+        
+            const storefront = {
+                name: storefrontName,
+                description: storefrontDescription,
+                password: password
+            }
+            set(ref(db, `storefronts/${storefrontName}`), storefront);
+            var num = window.localStorage.getItem("num");
+            update(ref(db, "storefronts/" + window.localStorage.getItem("storefrontName") + "/"+ num + "/"), {
+                product: products,
+                productImg: productImg,
+                productPrice: productPrice,
+                productDescription: productDescription,
+              
+            });
+            window.location.href = "./sfv.html";
+        }
+        function findStorefront() {
+            window.location.href = "./sff.html";
+        }
+        function manageStorefront() {
+            let name = prompt("What is the name of your storefront?");
+            let password = prompt("What is the password for your storefront?");
+            get(child(dbref, "storefronts/" + name)).then((snapshot) => {
+                if (snapshot.exists()) {
+                    if(snapshot.val().password == password) {
+                        window.localStorage.setItem("storefrontName", name);
+                        window.location.href = "./sfv.html";
+                    } else {
+                        alert("Incorrect password");
+                    }
+                } else {
+                    alert("Storefront does not exist");
+                }
+            }).catch((error) => {
+                console.error(error);
+            });
+           
+        }
+        
+    </script>
+</body>
+</html>

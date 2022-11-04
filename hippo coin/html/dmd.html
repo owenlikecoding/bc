@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./main.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <title>Dms</title>
+</head>
+
+<body>
+    <h1 id="l">Dms</h1>        
+    <a href="./home.html" style="font-family: monofont;">Back to home</a>
+    <a href="./home.html"><button onclick="window.localStorage.removeItem('dmid')"style="background-color: rgb(166, 8, 8); color: wheat; margin-left: 1%;" class="button-38">Leave</button>
+   
+    </a>
+    <button id="del" style="background-color: rgb(166, 8, 8); color: wheat; margin-left: .1%; display: none;" class="button-38">Delete post</button>
+    <ul id="stuff">
+
+    </ul><br>
+    <div id="ag">
+    <input type="text" id="content" placeholder="say somthing nice">
+    <button id="sub" class="button-38">Submit</button><button class="button-38" id="imgd" style="margin-left: 1%;">Uplaod as image url </button>
+</div>
+    <script type="module">
+        // Import the functions you need from the SDKs you need
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.12.1/firebase-app.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.12.1/firebase-analytics.js";
+        import { getDatabase, set, ref, get, child, onValue, update, remove } from "https://www.gstatic.com/firebasejs/9.12.1/firebase-database.js"
+        // TODO: Add SDKs for Firebase products that you want to use
+        // https://firebase.google.com/docs/web/setup#available-libraries
+
+        // Your web app's Firebase configuration
+        // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+        const firebaseConfig = {
+            apiKey: "AIzaSyBlgCt1yJFfwKguVfymD5s1uB98Y3mcL2U",
+            authDomain: "burt-coin.firebaseapp.com",
+            projectId: "burt-coin",
+            storageBucket: "burt-coin.appspot.com",
+            messagingSenderId: "942203765915",
+            appId: "1:942203765915:web:ce50f6f18a90216bce723e",
+            measurementId: "G-5CD9ZFYH8K"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const analytics = getAnalytics(app);
+        const db = getDatabase(app);
+        const dbref = ref(db);
+       
+          
+        
+      window.setTimeout(function() {
+        get(child(dbref, window.localStorage.getItem("dmid") + "/")).then(function(snapshot) {
+            if(window.localStorage.getItem("username") == snapshot.val().owned) {
+                $("#del").show();
+                $("#del").click(function() {
+                    let id = prompt("enter the post id you want to delete");
+                    remove(ref(db, window.localStorage.getItem("dmid") + "/" + id));
+                });
+                $(".postid").show();
+            }
+
+            
+            
+        })
+    }, 2000);
+      
+        var dmid = window.localStorage.getItem("dmid");
+        var l = document.getElementById("l");
+        var content = document.getElementById("content");
+        var sub = document.getElementById("sub");
+        var imgd = document.getElementById("imgd");
+        imgd.onclick = function() {
+            get(child(dbref, "users/" +  "number/")).then(function (snapshot) {
+              
+              var num = snapshot.val().num;
+
+            update(ref(db, dmid + "/" + num), {
+                content: "",
+                imageurl: content.value,
+                name: window.localStorage.getItem("username"),
+                postid: num
+            });
+            set(ref(db, "users/" +  "number/"), {
+                    num: num/1 - 1
+                });
+            
+            });
+            window.setTimeout(function() {
+                content.value = ""
+            }, 400)
+            
+        }
+        document.onkeydown = function(e) {
+            if(e.keyCode === 13) {
+                get(child(dbref, "users/" +  "number/")).then(function (snapshot) {
+              
+              var num = snapshot.val().num;
+
+            update(ref(db, dmid + "/" + num), {
+                content: content.value,
+                name: window.localStorage.getItem("username"),
+                postid: num
+            });
+            set(ref(db, "users/" +  "number/"), {
+                    num: num/1 - 1
+                });
+            
+            });
+            window.setTimeout(function() {
+                content.value = ""
+            }, 100)
+            }
+        }
+        sub.onclick = function() { 
+            get(child(dbref, "users/" +  "number/")).then(function (snapshot) {
+              
+              var num = snapshot.val().num;
+
+            update(ref(db, dmid + "/" + num), {
+                content: content.value,
+                name: window.localStorage.getItem("username"),
+                postid: num
+            });
+            set(ref(db, "users/" +  "number/"), {
+                    num: num/1 - 1
+                });
+            
+            });
+            window.setTimeout(function() {
+                content.value = ""
+            }, 400)
+            
+        }
+        const dmRef = ref(db, window.localStorage.getItem("dmid") + "/")
+        var stuff = document.getElementById("stuff");
+        onValue(dmRef, (snapshot) => {
+            stuff.innerHTML = ""
+           
+            snapshot.forEach(function (childSnapshot) {
+            var childKey = childSnapshot.key;
+                var childData = childSnapshot.val();
+                var post = document.createElement("li");
+                if(childData.imageurl == undefined) {
+                    post.innerHTML = `<div class="said">
+                                            <h2 class="postid" style="display: none;">${childData.postid}</h2>
+                                            <h2 class="name">${childData.name}</h2>
+                                            <p class="content">${childData.content}</p>
+                                       </div>
+                        `
+                        stuff.appendChild(post);
+                                    }
+                                    else {
+                                        post.innerHTML = `<div class="said">
+                                            <h2 class="postid" style="display: none;">${childData.postid}</h2>
+                                            <h2 class="name">${childData.name}</h2>
+                                            <img src="${childData.imageurl}" width="200px"
+                                            >
+                                            <p class="content">${childData.content}</p>
+                                       </div>
+                        `
+                        stuff.appendChild(post);
+                                    }
+
+                   
+            });
+            l.innerHTML = "Chat room" + ' ' + window.localStorage.getItem("dmid");
+            if(window.localStorage.getItem("username") == snapshot.val().owned) {
+                $("#del").show();
+                $("#del").click(function() {
+                    let id = prompt("enter the post id you want to delete");
+                    remove(ref(db, window.localStorage.getItem("dmid") + "/" + id));
+                });
+                $(".postid").show();
+            }
+        });
+                            
+                
+    </script>
+    <style>
+        
+        ul {
+            height: 70vh;
+            overflow: scroll;
+            width: 90%;
+            list-style: none;
+        }
+        .content {
+            margin-left: .5%;
+            font-family: monofont;
+        }
+        .said {
+            height: 5%;
+            margin-top: 1%;
+        }
+        
+       
+      
+    </style>
+</body>
+
+</html>

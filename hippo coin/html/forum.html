@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="./menu.js" type="module" defer></script>
+    <title>Forums</title>
+</head>
+
+<body>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <div id="topbar">
+
+        <div class="container" id="menu">
+            <div class="bar1"></div>
+            <div class="bar2"></div>
+            <div class="bar3"></div>
+        </div>
+        <h2>Burt <b>coin forums</b></h2>
+        <img id="propic">
+
+
+    </div>
+    <div id="sidenav">
+        <div id="links">
+            <br><br>
+            <a href="./forum.html">Forums</a><br><br>
+            <a href="">DMs</a><br><br>
+            <a href="">Storefronts</a><br><br>
+            <a href="">Account</a><br><br>
+            <a href="">Settings</a><br><br>
+            <a href="./bank.html">Banking</a><br><br>
+            <a href="./home.html">Home</a>
+        </div>
+
+    </div>
+    </div>
+    <div id="sidebarright">
+        <br><br>
+         <button id="create" class="button-38">Create a post</button><br><br>
+    </div>
+    <div id="cont">
+    <ul id="posts">
+        
+    </ul>
+    </div>
+    <style>
+        * {
+            margin: 0;
+        }
+        #sidebarright {
+            height: 100%;
+            width: 20%;
+            background-color: rgb(46, 46, 203);
+            margin-left: 80%;
+            text-align: center;
+           
+        } 
+       
+        a {
+            text-decoration: none;
+            color: white;
+            transition: .5s;
+            text-shadow: 2px 1px black;
+        }
+
+        #topbar {
+            height: 10%;
+            width: 100%;
+            background-color: rgb(30, 29, 29);
+            display: flex;
+            justify-content: space-around;
+            text-align: center;
+            align-items: center;
+            display: none;
+            box-shadow: rgba(0, 0, 0, 0.25) 0px 54px 55px, rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px, rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px;
+        }
+        
+
+        #data {
+            width: 50%;
+            height: 50%;
+
+        }
+
+        #sidenav {
+            height: 100%;
+            width: 20%;
+            background-color: rgb(27, 30, 208);
+            display: none;
+            box-shadow: rgba(0, 0, 0, 0.25) 0px 54px 55px, rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px, rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px;
+            text-align: center;
+            display: none;
+        }
+
+
+        #sidenav a:hover {
+            opacity: .5;
+        }
+
+        @keyframes backgroundPan {
+            from {
+                background-position: 0% center;
+            }
+
+            to {
+                background-position: -200% center;
+            }
+        }
+
+        #topbar img {
+            height: 7vh;
+            width: 7vh;
+            border-radius: 50%;
+            border: black 1px solid;
+        }
+
+        .container {
+            display: inline-block;
+            cursor: pointer;
+        }
+
+
+        .bar1,
+        .bar2,
+        .bar3 {
+            width: 35px;
+            height: 5px;
+            background-color: #333;
+            margin: 6px 0;
+            transition: 0.4s;
+        }
+
+        .change .bar1 {
+            transform: translate(0, 11px) rotate(-45deg);
+        }
+
+        .change .bar2 {
+            opacity: 0;
+        }
+
+        .change .bar3 {
+            transform: translate(0, -11px) rotate(45deg);
+        }
+
+        b {
+            background: -webkit-linear-gradient(135deg, rgb(89, 25, 177), rgb(46, 46, 203), rgb(49, 156, 49), white, orange);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-size: 200%;
+            animation: backgroundPan 3s linear infinite;
+        }
+
+
+
+        a:hover {
+            opacity: .5;
+        }
+
+        @font-face {
+            font-family: mainfont;
+            src: url("../fonts/uni-sans.heavy-caps.otf");
+        }
+
+        @font-face {
+            font-family: monofont;
+            src: url("../fonts/JetBrainsMono-Regular.ttf");
+        }
+
+        @font-face {
+            font-family: bigfont;
+            src: url(../fonts/Akira\ Expanded\ Demo.otf);
+        }
+
+        .main {
+            background-color: #111827;
+            width: 100%;
+            height: 90%;
+            box-shadow: rgba(0, 0, 0, 0.25) 0px 54px 55px, rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px, rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px;
+            text-align: center;
+            display: grid;
+            place-items: center;
+
+        }
+
+        .main h1 {
+            font-family: bigfont;
+        }
+
+        body {
+            background-color: #111827;
+            height: 100vh;
+            color: white;
+            font-family: mainfont;
+            
+        }
+
+        h2 {
+            font-family: mainfont;
+            text-emphasis: bold;
+        }
+
+
+        input {
+            background-color: rgb(30, 29, 29);
+            width: 80%;
+            height: 4vh;
+            text-align: center;
+            font-family: monofont;
+            color: white;
+            margin-top: -2%;
+            border-radius: 12px;
+        }
+
+
+        .button-38 {
+            background-color: #FFFFFF;
+            border: 0;
+            border-radius: .5rem;
+            box-sizing: border-box;
+            color: #111827;
+            font-family: "Inter var", ui-sans-serif, system-ui, -apple-system, system-ui, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+            font-size: .875rem;
+            font-weight: 600;
+            line-height: 1.25rem;
+            padding: .75rem 1rem;
+            text-align: center;
+            text-decoration: none #D1D5DB solid;
+            text-decoration-thickness: auto;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+            cursor: pointer;
+            user-select: none;
+            -webkit-user-select: none;
+            touch-action: manipulation;
+        }
+
+        .button-38:hover {
+            background-color: rgb(249, 250, 251);
+        }
+
+        .button-38:focus {
+            outline: 2px solid transparent;
+            outline-offset: 2px;
+        }
+
+        .button-38:focus-visible {
+            box-shadow: none;
+        }
+        .post {
+            width: 80%;
+            text-align: center;
+            justify-content: left;
+            align-items: center;
+            margin-bottom: 2%;
+            padding-bottom: 1%;
+            height: auto;
+            background-color: white;
+            color: black;
+            border: wheat 5px solid;
+            overflow: scroll;
+            line-break: normal;
+            
+        }
+
+        ul {
+            overflow: scroll;
+            list-style: none;
+            height: 100%;
+            width: 80%;
+            margin-top: -50%;
+            height: 100vh;
+        }
+    
+    .upvote, .downvote {
+        font-size: x-large;
+        border: none;
+        background: none;
+        cursor: pointer;
+    }
+    .upvote:hover, .downvote:hover {
+        border: rgb(208, 23, 23) 1px solid;
+    }
+    </style>
+
+    <style>
+        
+    </style>
+    <script type="module">
+            // Import the functions you need from the SDKs you need
+            import { initializeApp } from "https://www.gstatic.com/firebasejs/9.12.1/firebase-app.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.12.1/firebase-analytics.js";
+        import { getDatabase, set, ref, get, child, onValue, update } from "https://www.gstatic.com/firebasejs/9.12.1/firebase-database.js"
+        // TODO: Add SDKs for Firebase products that you want to use
+        // https://firebase.google.com/docs/web/setup#available-libraries
+
+        // Your web app's Firebase configuration
+        // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+        const firebaseConfig = {
+            apiKey: "AIzaSyBlgCt1yJFfwKguVfymD5s1uB98Y3mcL2U",
+            authDomain: "burt-coin.firebaseapp.com",
+            projectId: "burt-coin",
+            storageBucket: "burt-coin.appspot.com",
+            messagingSenderId: "942203765915",
+            appId: "1:942203765915:web:ce50f6f18a90216bce723e",
+            measurementId: "G-5CD9ZFYH8K"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const analytics = getAnalytics(app);
+        const db = getDatabase(app);
+        const dbref = ref(db);
+        var create = document.getElementById("create");
+        create.onclick = function () {
+            let postName = prompt("Enter a post name");
+            let postContent = prompt("Enter the content of the post you want to create");
+            let postImg = prompt("Enter an image url (or dont)");
+            get(child(dbref, "users/" +  "number/")).then(function (snapshot) {
+              
+                var num = snapshot.val().num;
+
+                set(ref(db, "posts/" + num), {
+                    name: window.localStorage.getItem("username"),
+                    postName: postName,
+                    postContent: postContent,
+                    votes: 0,
+                    id: num,
+                    postImg: postImg
+                });
+                set(ref(db, "users/" +  "number/"), {
+                    num: num/1 - 1
+                });
+            
+            });
+           
+        }
+      
+        
+
+
+
+        var posts = document.getElementById("posts");
+        const postRef = ref(db, "posts/")
+        get(postRef, (snapshot) => {
+            posts.innerHTML = "";
+            snapshot.forEach(function (childSnapshot) {
+            var childKey = childSnapshot.key;
+                var childData = childSnapshot.val();
+                var post = document.createElement("li");
+                if(childData.postImg == "")  {
+                    post.innerHTML = `<div class="post">
+                                       
+                                       <h2 class="Name">${childData.name} Says... </h2>
+                                       <h3 class="sho">${childData.postName}</h3>
+                                       <p>${childData.postContent}</p>
+                                      
+                                       <button class="upvote" onclick="window.localStorage.setItem('cp', ${childData.id})">&#8593;</button>
+                                            <p class="num">${childData.votes}</p>
+                                            <button class="downvote" onclick="window.localStorage.setItem('cp', ${childData.id})">&#8595;</button><br>
+                                            <button class="comment" onclick="window.localStorage.setItem('cp', ${childData.id})">💬</button>
+
+                                   
+                                   
+                               
+                               </div>
+                               
+                              
+                               `
+                               posts.appendChild(post);
+
+                }
+                else {
+
+                
+                post.innerHTML = `<div class="post">
+                                       
+                                            <h2 class="Name">${childData.name} Says... </h2>
+                                            <h3 class="sho">${childData.postName}</h3>
+                                            <img src="${childData.postImg}">
+                                            <p>${childData.postContent}</p>
+                                            <button class="upvote" onclick="window.localStorage.setItem('cp', ${childData.id})">&#8593;/button>
+                                            <p class="num">${childData.votes}</p>
+                                            <button class="downvote" onclick="window.localStorage.setItem('cp', ${childData.id})">&#8595;</button><br>
+                                            <button class="comment" onclick="window.localStorage.setItem('cp', ${childData.id})">💬</button>
+                                    
+                                    </div>
+                                    
+                                   
+                                    `
+                posts.appendChild(post);
+                                }});
+        })
+        
+        onValue(postRef, (snapshot) => {
+            
+            posts.innerHTML = "";
+            snapshot.forEach(function (childSnapshot) {
+            var childKey = childSnapshot.key;
+                var childData = childSnapshot.val();
+                var post = document.createElement("li");
+                if(childData.postImg == "")  {
+                    post.innerHTML = `<div class="post">
+                                       
+                                       <h2 class="Name">${childData.name} Says... </h2>
+                                       <h3 class="sho">${childData.postName}</h3>
+                                       <p>${childData.postContent}</p>
+                                       <button class="upvote" onclick="window.localStorage.setItem('cp', ${childData.id})">&#8593;</button>
+                                            <p class="num">${childData.votes}</p>
+                                            <button class="downvote" onclick="window.localStorage.setItem('cp', ${childData.id})">&#8595;</button><br>
+                                            <button class="comment" onclick="window.localStorage.setItem('cp', ${childData.id})">💬</button>
+                                   
+                                   
+                               
+                               </div>
+                               
+                              
+                               `
+                               posts.appendChild(post);
+
+                }
+                else {
+
+                
+                post.innerHTML = `<div class="post">
+                                       
+                                            <h2 class="Name">${childData.name} Says...</h2>
+                                            <h3 class="sho">${childData.postName}</h3>
+                                            <img src="${childData.postImg}">
+                                            <p>${childData.postContent}</p>
+                                            <button class="upvote" onclick="window.localStorage.setItem('cp', ${childData.id})">&#8593;</button>
+                                            <p class="num">${childData.votes}</p>
+                                            <button class="downvote" onclick="window.localStorage.setItem('cp', ${childData.id})">&#8595;</button><br>
+                                            <button class="comment" onclick="window.localStorage.setItem('cp', ${childData.id})">Comment💬</button><br>
+                                            <button class="vcomment" onclick="window.localStorage.setItem('cp', ${childData.id})">View Comments💬</button>
+
+
+                                        
+                                    
+                                    </div>
+                                    
+                                   
+                                    `
+                posts.appendChild(post);
+                                }
+                                });
+                            
+            });
+          window.setTimeout(function() {
+            $(".upvote").click(function() {
+                get(child(dbref, "posts/" + window.localStorage.getItem("cp"))).then(function(snapshot) {
+                    update(ref(db, "posts/" + window.localStorage.getItem("cp")), {
+                        votes: snapshot.val().votes/1 + 1
+                    });
+                })
+                
+            });
+            $(".downvote").click(function() {
+                get(child(dbref, "posts/" + window.localStorage.getItem("cp"))).then(function(snapshot) {
+                    update(ref(db, "posts/" + window.localStorage.getItem("cp")), {
+                        votes: snapshot.val().votes/1 - 1
+                    });
+                })
+                
+            });
+            $(".comment").click(function() {
+                // make a random number for the comment id
+                let content = prompt("What do you want to say?");
+                var num = Math.floor(Math.random(1000 - 1) * 1000);
+
+
+               update(ref(db, "posts/" + window.localStorage.getItem("cp") + "/" + "comments/" + num), {
+                    content: content,
+                    id: num, 
+                    username: window.localStorage.getItem("username")
+               })
+            });
+            $(".vcomment").click(function() {
+                window.location.href = "comments.html";
+            });
+          }, 1000)
+          
+
+       
+        document.onkeydown = function(e) {
+            if (e.keyCode === 87) {
+                var sidenav = document.getElementById("sidenav").style.display = "block";;
+                var topbar = document.getElementById("topbar").style.display = "flex"
+            }
+        }
+          
+       
+    </script>
+</body>
+
+</html>

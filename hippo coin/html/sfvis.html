@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Storefront</title>
+    <link rel="stylesheet" href="./main.css">
+</head>
+<body>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <h2>products:</h2>
+    <ul id="pro">
+    </ul>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.12.1/firebase-app.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.12.1/firebase-analytics.js";
+        import { getDatabase, set, ref, get, child, onValue, update, remove } from "https://www.gstatic.com/firebasejs/9.12.1/firebase-database.js";
+
+        // Your web app's Firebase configuration
+        // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+        const firebaseConfig = {
+            apiKey: "AIzaSyBlgCt1yJFfwKguVfymD5s1uB98Y3mcL2U",
+            authDomain: "burt-coin.firebaseapp.com",
+            projectId: "burt-coin",
+            storageBucket: "burt-coin.appspot.com",
+            messagingSenderId: "942203765915",
+            appId: "1:942203765915:web:ce50f6f18a90216bce723e",
+            measurementId: "G-5CD9ZFYH8K"
+        };
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const analytics = getAnalytics(app);
+        const db = getDatabase(app);
+        const dbref = ref(db);
+        var sv = window.localStorage.getItem("sv");
+        
+        document.title = sv;
+       
+          // get products from db
+          onValue(child(dbref, 'storefronts/' + window.localStorage.getItem("storefrontName")), function(snapshot) {
+            pro.innerHTML = "";
+            snapshot.forEach(function (childSnapshot) {
+            var childKey = childSnapshot.key;
+                var childData = childSnapshot.val();
+                var post = document.createElement("li");
+                if(childData.product === undefined) {
+                    post.innerHTML = ""
+                }
+              
+                else {
+                    post.innerHTML = `<div class="said">
+                                            <h2 class="name">${childData.product}</h2>
+                                            <img src="${childData.productImg}" alt="product image" class="image" height="200px">
+                                            <p class="disc" style="font-family: monofont">${childData.productDescription}</p>
+                                            <h3>price: ${childData.productPrice}</h3>
+                                            <button class="buy" onclick="window.localStorage.setItem('z', '${childData.id}');">buy</button>
+                                       </div>
+                        `
+                        pro.appendChild(post);
+                                    }
+            });
+        });
+setTimeout(function() {
+      $(".buy").click(function() {
+    
+        get(child(dbref, "storefronts/" + window.localStorage.getItem("sv") + "/" + window.localStorage.getItem("z") + "/")).then(function(snapshot) {
+            var balance = window.localStorage.getItem("balance");
+            var price = snapshot.val().productPrice;
+            if(balance < price) {
+            alert("you don't have enough money to buy this product")
+            }
+           else {
+            alert("you bought " + snapshot.val().product);
+            var newBalance = balance - price;
+            window.localStorage.setItem("balance", newBalance);
+            update(ref(db, "users/" + window.localStorage.getItem("username") + "/"), {
+                balance: newBalance
+            });
+            alert("Go to the owner of " + window.localStorage.getItem("sv") + " to get your product");
+            remove(ref(db, "storefronts/" + window.localStorage.getItem("sv") + "/" + window.localStorage.getItem("z") + "/"));
+           }
+        })
+           
+        });
+    }, 500);
+           
+    </script>
+</body>
+</html>
