@@ -9,14 +9,19 @@
 </head>
 <body>
     <header>
-        <a href="./home">Back to home</a><h2>Settings</h2>
+        <a href="./home">Back to home</a><h2>Settings</h2><img id="propic">
     </header>
  <br><br>
     <div id="settings">
     <input type="text" id="profile" placeholder="enter a image url for profile picture">
     <button class="button-38" id="but">Submit</button>
     </div>
-    
+    <style>
+         img {
+        height: 200px;
+        border-radius: 50%;
+        }
+    </style>
     <script type="module">
         
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.12.1/firebase-app.js";
@@ -56,6 +61,7 @@
             
         }
     </script>
+    <script src="./menu.js"></script>
    
 </body>
 </html>
