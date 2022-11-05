@@ -228,8 +228,10 @@
             }
         });
         
-
-        setInterval(function() {
+if(window.localStorage.getItem("typing") == "true") {
+               
+    
+       setInterval(function() {
             if(content.value == "") {
                 update(ref(db, "users/" + window.localStorage.getItem("username")), {
                     typing: false
@@ -243,7 +245,8 @@
                 });
             }
 
-        }, 1);
+
+        }, 1000);
         onValue(ref(db, "users/"), (snapshot) => {
             
             typing.innerHTML = ""
@@ -257,6 +260,8 @@
                 }
             });
         });
+    }
+      
         
               update(ref(db, "users/" + window.localStorage.getItem("username")), {
                     online: true
