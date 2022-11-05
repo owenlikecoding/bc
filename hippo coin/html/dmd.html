@@ -7,6 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="./main.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <link rel="icon" type="../assets/x-icon" href="../assets/favicon.ico">
     <title>Dms</title>
 </head>
 
@@ -178,9 +179,10 @@
         }
         const dmRef = ref(db, window.localStorage.getItem("dmid") + "/")
         var stuff = document.getElementById("stuff");
-        var sound = new Audio("../assets/message.mp3");
+        var sound = new Audio("../assets/notification.mp3");
         onValue(dmRef, (snapshot) => {
             stuff.innerHTML = ""
+            
            
          
             snapshot.forEach(function (childSnapshot) {
@@ -188,9 +190,10 @@
             var childKey = childSnapshot.key;
                 var childData = childSnapshot.val();
                 var post = document.createElement("li");
-                if(childData.name !== window.localStorage.getItem("username")) {
+             if(childData.name !== window.localStorage.getItem("username")) {
                 sound.play();
-            }
+             }
+             
                
                 if(childData.imageurl == undefined) {
                     post.innerHTML = `<div class="said">
@@ -332,6 +335,19 @@
         text-align: center;
         color: white;
       }
+      @media screen and (max-width: 600px) {
+        h2, h1, p, a, button  {
+            font-size: x-small;
+        }
+        button {
+            scale: .8;
+        }
+        .online {
+            overflow: scroll;
+        }
+      }
+        
+      
     </style>
 </body>
 
