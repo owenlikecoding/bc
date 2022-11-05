@@ -11,13 +11,18 @@
 </head>
 
 <body>
+    <div class="top">
     <h1 id="l">Dms</h1> 
     <a href="./home.html" style="font-family: monofont;">Back to home</a>
-  
-    <a href="./home.html"><button onclick="window.localStorage.removeItem('dmid')"style="background-color: rgb(166, 8, 8); color: wheat; margin-left: 1%;" class="button-38">Leave</button>
-   
-    </a>
+    <a href="./home.html"><button onclick="window.localStorage.removeItem('dmid')"style="background-color: rgb(166, 8, 8); color: wheat; margin-left: 1%;" class="button-38">Leave</button></a>
     <button id="del" style="background-color: rgb(166, 8, 8); color: wheat; margin-left: .1%; display: none;" class="button-38">Delete post</button>
+    <i id="on">Online</i>
+    </div>
+    <div class="online" style="display: none;">
+        <h3>Online:</h3>
+    <ol id="online"></ol>
+    </div>
+    
     <ul id="stuff">
 
     </ul><br>
@@ -26,11 +31,7 @@
     <input type="text" id="content" placeholder="say somthing nice">
     <button id="sub" class="button-38">Submit</button><button class="button-38" id="imgd" style="margin-left: 1%;">Uplaod as image url </button>
     <p id="typing"></p>
-    <div class="online">
-        <h3>Online:</h3>
-    <ol id="online"></ol>
-</div>
-    
+  
 </div>
 
     <script type="module">
@@ -177,13 +178,20 @@
         }
         const dmRef = ref(db, window.localStorage.getItem("dmid") + "/")
         var stuff = document.getElementById("stuff");
+        var sound = new Audio("../assets/message.mp3");
         onValue(dmRef, (snapshot) => {
             stuff.innerHTML = ""
            
+         
             snapshot.forEach(function (childSnapshot) {
+            
             var childKey = childSnapshot.key;
                 var childData = childSnapshot.val();
                 var post = document.createElement("li");
+                if(childData.name !== window.localStorage.getItem("username")) {
+                sound.play();
+            }
+               
                 if(childData.imageurl == undefined) {
                     post.innerHTML = `<div class="said">
                                             <h2 class="postid" style="display: none;">${childData.postid}</h2>
@@ -205,7 +213,6 @@
                         stuff.appendChild(post);
                                     }
 
-                   
             });
             l.innerHTML = "Chat room" + ' ' + window.localStorage.getItem("dmid");
             if(window.localStorage.getItem("username") == snapshot.val().owned) {
@@ -235,13 +242,14 @@
 
         }, 1);
         onValue(ref(db, "users/"), (snapshot) => {
+            
             typing.innerHTML = ""
             snapshot.forEach(function (childSnapshot) {
             var childKey = childSnapshot.key;
                 var childData = childSnapshot.val();
                 if(childData.typing == true) {
                     var typer = document.createElement("li");
-                    typer.innerHTML = childData.username + " is typing " + "on server " + childData.dmid+ "...";
+                    typer.innerHTML = childData.username + " is typing....";
                     typing.appendChild(typer);
                 }
             });
@@ -264,12 +272,20 @@
                     });
                 });
                 var onlined = document.getElementsByClassName("online");
-                window.onkeydown = function(e) {
-                    if(e.keyCode === 85) {
-                        e.preventDefault();
-                        $(".online").toggle();
-                    }
-                }
+                window.addEventListener("beforeunload", function(e){
+                    update(ref(db, "users/" + window.localStorage.getItem("username")), {
+                    online: false
+                });
+            
+                }, false);
+            
+             
+    </script>
+    <script>
+        var on = document.getElementById("on");
+        on.onclick = function() {
+            $(".online").toggle();
+        }
     </script>
     <style>
         
@@ -278,6 +294,9 @@
             overflow: scroll;
             width: 90%;
             list-style: none;
+        }
+        h1 {
+            text-shadow: black 2px 2px;
         }
         .content {
             margin-left: .5%;
@@ -290,7 +309,29 @@
       ol {
         font-family: monofont;
       }
-      
+      .top {
+            display: flex;
+            justify-content: space-evenly;
+            align-items: center;
+            height: 10%;
+            background-color: rgb(11, 7, 72);
+      }
+      .online {
+        position: fixed;
+        left: 73%;
+        width: 20%;
+        height: 20%;
+        margin-top: 1.5%;
+        background-color: rgb(15, 15, 65);
+        padding: 2%;
+        border-radius: 5px;
+        box-shadow: 0 0 10px rgb(255, 255, 255);
+    
+      }
+      .online >  h3 {
+        text-align: center;
+        color: white;
+      }
     </style>
 </body>
 
