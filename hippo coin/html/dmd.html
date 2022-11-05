@@ -21,11 +21,11 @@
 
     </ul><br>
     <div id="ag">
-       
+        <p id="typing"></p>
     <input type="text" id="content" placeholder="say somthing nice">
     <button id="sub" class="button-38">Submit</button><button class="button-38" id="imgd" style="margin-left: 1%;">Uplaod as image url </button>
-         <p id="typing"></p>
 </div>
+
     <script type="module">
         // Import the functions you need from the SDKs you need
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.12.1/firebase-app.js";
@@ -51,6 +51,8 @@
         const analytics = getAnalytics(app);
         const db = getDatabase(app);
         const dbref = ref(db);
+       // make a badword filter
+        const badwords =  ["fuck", "shit", "bitch", "nigger", "fuc", "pussy", "ass", "burt coin is bad", "dick"]
        
           
         
@@ -98,6 +100,17 @@
         }
         document.onkeydown = function(e) {
             if(e.keyCode === 13) {
+                  // check if bad words are in content
+            var bad = false;
+            for(var i = 0; i < badwords.length; i++) {
+                if(content.value.includes(badwords[i])) {
+                    bad = true;
+                    content.vale = "";
+                }
+            }
+            if(bad == true) {
+                alert("bad word detected");
+            } else {
                 get(child(dbref, "users/" +  "number/")).then(function (snapshot) {
               
               var num = snapshot.val().num;
@@ -117,7 +130,23 @@
             }, 100)
             }
         }
+        }
         sub.onclick = function() { 
+            // check if bad words are in content
+            var bad = false;
+            for(var i = 0; i < badwords.length; i++) {
+                if(content.value.includes(badwords[i])) {
+                    bad = true;
+                    content.vale = "";
+                }
+            }
+            if(bad == true) {
+                alert("bad word detected");
+            } else {
+                
+               
+            
+
             get(child(dbref, "users/" +  "number/")).then(function (snapshot) {
               
               var num = snapshot.val().num;
@@ -134,8 +163,8 @@
             });
             window.setTimeout(function() {
                 content.value = ""
-            }, 400)
-            
+            }, 400)  
+        }
         }
         const dmRef = ref(db, window.localStorage.getItem("dmid") + "/")
         var stuff = document.getElementById("stuff");
@@ -179,19 +208,22 @@
                 $(".postid").show();
             }
         });
-        var typing = document.getElementById("typing");
+        
+
         setInterval(function() {
             if(content.value == "") {
                 update(ref(db, "users/" + window.localStorage.getItem("username")), {
                     typing: false
                 });
             }
+           
             else {
                 update(ref(db, "users/" + window.localStorage.getItem("username")), {
                     typing: true,
                     dmid: window.localStorage.getItem("dmid")
                 });
             }
+
         }, 1);
         onValue(ref(db, "users/"), (snapshot) => {
             typing.innerHTML = ""
