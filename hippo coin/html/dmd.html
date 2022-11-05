@@ -21,6 +21,7 @@
 
     </ul><br>
     <div id="ag">
+        <p id="typing"></p>
     <input type="text" id="content" placeholder="say somthing nice">
     <button id="sub" class="button-38">Submit</button><button class="button-38" id="imgd" style="margin-left: 1%;">Uplaod as image url </button>
 </div>
@@ -177,7 +178,33 @@
                 $(".postid").show();
             }
         });
-                            
+        var typing = document.getElementById("typing");
+        setInterval(function() {
+            if(content.value == "") {
+                update(ref(db, "users/" + window.localStorage.getItem("username")), {
+                    typing: false
+                });
+            }
+            else {
+                update(ref(db, "users/" + window.localStorage.getItem("username")), {
+                    typing: true,
+                    dmid: window.localStorage.getItem("dmid")
+                });
+            }
+        }, 1);
+        onValue(ref(db, "users/"), (snapshot) => {
+            typing.innerHTML = ""
+            snapshot.forEach(function (childSnapshot) {
+            var childKey = childSnapshot.key;
+                var childData = childSnapshot.val();
+                if(childData.typing == true) {
+                    var typer = document.createElement("li");
+                    typer.innerHTML = childData.username + " is typing " + "on server " + childData.dmid+ "...";
+                    typing.appendChild(typer);
+                }
+            });
+        });
+        
                 
     </script>
     <style>
