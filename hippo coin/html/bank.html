@@ -150,8 +150,9 @@
                  if(action == "tma") {
                     let bank = prompt("Enter your bank name");
                     let amount = prompt("How much do you want to transfer?");
+                    let name = prompt("enter your bank username");
                     let password = prompt("Enter your password");
-                    get(child(dbref, "banks/" + bank + "/" + "users/" + window.localStorage.getItem("an") + "/")).then(function(snapshot) {
+                    get(child(dbref, "banks/" + bank + "/" + "users/" + name)).then(function(snapshot) {
                         if(snapshot.exists()) {
                             if(snapshot.val().password !== password) {
                                 alert("Wrong password");
@@ -162,7 +163,7 @@
                                 }
                                 else {
                                     let newbalance = snapshot.val().balance - amount;
-                                    update(ref(db, "banks/" + name + "/" + "users/" + window.localStorage.getItem("an")), {
+                                    update(ref(db, "banks/" + name + "/" + "users/" + name), {
                                         balance: newbalance
                                     });
                                     let newbalance2 = parseInt(window.localStorage.getItem("balance")) + parseInt(amount);
