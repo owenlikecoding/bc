@@ -87,7 +87,7 @@
             let accountName = prompt("Enter your account name (2/4)");
             let password = prompt("Enter your password (3/4)");
             let amount = prompt("How much do you want to loan? (4/4)");
-            get(child(dbref, "banks/" + name + "/" + accountName)).then(function(snapshot) {
+            get(child(dbref, "banks/" + name + "/" + "users/" + accountName)).then(function(snapshot) {
                 if(snapshot.exists()) {
                     if(snapshot.val().password !== password) {
                         alert("Wrong password");
