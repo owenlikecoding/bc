@@ -11,8 +11,9 @@
 </head>
 
 <body>
-    <h1 id="l">Dms</h1>        
+    <h1 id="l">Dms</h1> 
     <a href="./home.html" style="font-family: monofont;">Back to home</a>
+  
     <a href="./home.html"><button onclick="window.localStorage.removeItem('dmid')"style="background-color: rgb(166, 8, 8); color: wheat; margin-left: 1%;" class="button-38">Leave</button>
    
     </a>
@@ -21,10 +22,15 @@
 
     </ul><br>
     <div id="ag">
-   
+        
     <input type="text" id="content" placeholder="say somthing nice">
     <button id="sub" class="button-38">Submit</button><button class="button-38" id="imgd" style="margin-left: 1%;">Uplaod as image url </button>
-             <p id="typing"></p>
+    <p id="typing"></p>
+    <div class="online">
+        <h3>Online:</h3>
+    <ol id="online"></ol>
+</div>
+    
 </div>
 
     <script type="module">
@@ -53,7 +59,8 @@
         const db = getDatabase(app);
         const dbref = ref(db);
        // make a badword filter
-        const badwords =  ["fuck", "shit", "bitch", "nigger", "fuc", "pussy", "ass", "burt coin is bad", "dick"]
+        const badwords =  ["burt coin is bad", 
+        "shit", "bitch", "nigger", "fuc", "pussy", "ass", "fuck", "dick", "numnut", "cunt"]
        
           
         
@@ -72,6 +79,7 @@
             
         })
     }, 2000);
+    var online = document.getElementById("online");
       
         var dmid = window.localStorage.getItem("dmid");
         var l = document.getElementById("l");
@@ -239,7 +247,29 @@
             });
         });
         
-                
+              update(ref(db, "users/" + window.localStorage.getItem("username")), {
+                    online: true
+                });
+                const onlineRef = ref(db, "users/");
+                onValue(onlineRef, (snapshot) => {
+                    online.innerHTML = ""
+                    snapshot.forEach(function (childSnapshot) {
+                    var childKey = childSnapshot.key;
+                        var childData = childSnapshot.val();
+                        if(childData.online == true) {
+                            var onlineuser = document.createElement("li");
+                            onlineuser.innerHTML = childData.username;
+                            online.appendChild(onlineuser);
+                        }
+                    });
+                });
+                var onlined = document.getElementsByClassName("online");
+                window.onkeydown = function(e) {
+                    if(e.keyCode === 85) {
+                        e.preventDefault();
+                        $(".online").toggle();
+                    }
+                }
     </script>
     <style>
         
@@ -257,8 +287,9 @@
             height: 5%;
             margin-top: 1%;
         }
-        
-       
+      ol {
+        font-family: monofont;
+      }
       
     </style>
 </body>
