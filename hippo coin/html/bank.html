@@ -121,7 +121,7 @@
         // get bank vars
         $("#bank").click(function() {
             let name = prompt("Enter the bank name");
-            let action = prompt("What do you want to do? (loan, transfer coins to main account (tma), get Acount (ga))");
+            let action = prompt("What do you want to do? (loan, transfer coins to main account (tma), get Acount (ga), get balance (gb)");
             get(child(dbref, "banks/" + name + "/")).then(function(snapshot) {
                 if(snapshot.exists()) {  
                    if(action == "loan") {
@@ -179,6 +179,18 @@
                  });
                  }
                 
+            }
+              if(action == "gb") {
+                // get balance
+                let name = prompt("Enter your bank username");
+                get(child(dbref, "banks/" + name + "/" + "users/" + name)).then(function(snapshot) {
+                    if(snapshot.exists()) {
+                        alert("Your balance is " + snapshot.val().balance);
+                    }
+                    else {
+                        alert("You dont have an account");
+                    }
+                });
             }
             else {
                     alert("This bank does not exist");
