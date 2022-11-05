@@ -182,6 +182,7 @@
             }
               if(action == "gb") {
                 // get balance
+                let bankName = prompt("Enter the bank name");
                 let name = prompt("Enter your bank username");
                      get(child(dbref, "banks/" + bankName + "/" + "users/" + name)).then(function(snapshot) {
                     if(snapshot.exists()) {
