@@ -63,7 +63,8 @@
        // make a badword filter
         const badwords =  ["burt coin is bad", 
         "shit", "bitch", "nigger", "fuc", "pussy", "ass", "fuck", "dick", "numnut", "cunt"]
-       
+
+      
           
         
       window.setTimeout(function() {
@@ -81,7 +82,7 @@
             
         })
     }, 2000);
-    var online = document.getElementById("online");
+      var online = document.getElementById("online");
       
         var dmid = window.localStorage.getItem("dmid");
         var l = document.getElementById("l");
@@ -137,7 +138,8 @@
             
             });
             window.setTimeout(function() {
-                content.value = ""
+                content.value = "";
+                content.focus();
             }, 100)
             }
         }
@@ -174,6 +176,7 @@
             });
             window.setTimeout(function() {
                 content.value = ""
+                content.focus();
             }, 400)  
         }
         }
@@ -206,10 +209,9 @@
                                     }
                                     else {
                                         post.innerHTML = `<div class="said">
-                                            <h2 class="postid" style="display: none;">${childData.postid}</h2>
+                                            <h4 class="postid" style="display: none; ">${childData.postid}</h4>
                                             <h2 class="name">${childData.name}</h2>
-                                            <img src="${childData.imageurl}" width="200px"
-                                            >
+                                            <img src="${childData.imageurl}" width="200px">
                                             <p class="content">${childData.content}</p>
                                        </div>
                         `
@@ -228,7 +230,7 @@
             }
         });
         
-if(window.localStorage.getItem("typing") == "true") {
+    if(window.localStorage.getItem("typing") == "true") {
                
     
        setInterval(function() {
@@ -286,7 +288,7 @@ if(window.localStorage.getItem("typing") == "true") {
                 });
             
                 }, false);
-            
+                content.focus();  
              
     </script>
     <script>
@@ -305,6 +307,10 @@ if(window.localStorage.getItem("typing") == "true") {
         }
         h1 {
             text-shadow: black 2px 2px;
+        }
+        .postid {
+            font-family: monofont;
+            font-size: medium;
         }
         .content {
             margin-left: .5%;
