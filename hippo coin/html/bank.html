@@ -83,11 +83,10 @@
             }
         });
         function loan() {
-            let name = prompt("Enter your bank name (1/4)");
-            let accountName = prompt("Enter your account name (2/4)");
-            let password = prompt("Enter your password (3/4)");
-            let amount = prompt("How much do you want to loan? (4/4)");
-            get(child(dbref, "banks/" + name + "/" + "users/" + accountName)).then(function(snapshot) {
+            let name = prompt("Enter your bank name (1/3)");
+            let password = prompt("Enter your password (2/3)");
+            let amount = prompt("How much do you want to loan? (3/3)");
+            get(child(dbref, "banks/" + name + "/")).then(function(snapshot) {
                 if(snapshot.exists()) {
                     if(snapshot.val().password !== password) {
                         alert("Wrong password");
@@ -121,7 +120,7 @@
         // get bank vars
         $("#bank").click(function() {
             let name = prompt("Enter the bank name");
-            let action = prompt("What do you want to do? (loan, transfer coins to main account (tma), get Acount (ga), get balance (gb)");
+            let action = prompt("What do you want to do? (loan, transfer coins to main account (tma), get Acount (ga))");
             get(child(dbref, "banks/" + name + "/")).then(function(snapshot) {
                 if(snapshot.exists()) {  
                    if(action == "loan") {
@@ -150,9 +149,8 @@
                  if(action == "tma") {
                     let bank = prompt("Enter your bank name");
                     let amount = prompt("How much do you want to transfer?");
-                    let name = prompt("enter your bank username");
                     let password = prompt("Enter your password");
-                    get(child(dbref, "banks/" + bank + "/" + "users/" + name)).then(function(snapshot) {
+                    get(child(dbref, "banks/" + bank + "/" + "users/" + window.localStorage.getItem("an") + "/")).then(function(snapshot) {
                         if(snapshot.exists()) {
                             if(snapshot.val().password !== password) {
                                 alert("Wrong password");
@@ -163,7 +161,7 @@
                                 }
                                 else {
                                     let newbalance = snapshot.val().balance - amount;
-                                    update(ref(db, "banks/" + bank), {
+                                    update(ref(db, "banks/" + name + "/" + "users/" + window.localStorage.getItem("an")), {
                                         balance: newbalance
                                     });
                                     let newbalance2 = parseInt(window.localStorage.getItem("balance")) + parseInt(amount);
@@ -181,11 +179,11 @@
                  }
                 
             }
-              if(action == "gb") {
+            if(action == "gb") {
                 // get balance
                 let bankName = prompt("Enter the bank name");
                 let name = prompt("Enter your bank username");
-                     get(child(dbref, "banks/" + bankName + "/" + "users/" + name)).then(function(snapshot) {
+                get(child(dbref, "banks/" + bankName + "/" + "users/" + name)).then(function(snapshot) {
                     if(snapshot.exists()) {
                         alert("Your balance is " + snapshot.val().balance);
                     }

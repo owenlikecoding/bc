@@ -34,11 +34,11 @@
         const db = getDatabase(app);
         const dbref = ref(db);
         var sv = window.localStorage.getItem("sv");
-        
+        var pro = document.getElementById("pro");
         document.title = sv;
        
           // get products from db
-          onValue(child(dbref, 'storefronts/' + window.localStorage.getItem("storefrontName")), function(snapshot) {
+          get(child(dbref, "storefronts/" + window.localStorage.getItem("sv"))).then( function(snapshot) {
             pro.innerHTML = "";
             snapshot.forEach(function (childSnapshot) {
             var childKey = childSnapshot.key;
@@ -47,6 +47,7 @@
                 if(childData.product === undefined) {
                     post.innerHTML = ""
                 }
+              
               
                 else {
                     post.innerHTML = `<div class="said">
@@ -58,7 +59,7 @@
                                        </div>
                         `
                         pro.appendChild(post);
-                                    }
+                }
             });
         });
 setTimeout(function() {
@@ -83,7 +84,7 @@ setTimeout(function() {
         })
            
         });
-    }, 500);
+    }, 2000);
            
     </script>
 </body>

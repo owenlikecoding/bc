@@ -27,9 +27,10 @@
         <div id="links">
             <br><br>
             <a href="./forum.html">Forums</a><br><br>
-            <a href="./dms.html">DMs</a><br><br>
-            <a href="./sf.html">Storefronts</a><br><br>
-            <a href="./settings.html">Settings</a><br><br>
+            <a href="">DMs</a><br><br>
+            <a href="">Storefronts</a><br><br>
+            <a href="">Account</a><br><br>
+            <a href="">Settings</a><br><br>
             <a href="./bank.html">Banking</a><br><br>
             <a href="./home.html">Home</a>
         </div>
@@ -289,7 +290,7 @@
     </style>
     <script type="module">
             // Import the functions you need from the SDKs you need
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.12.1/firebase-app.js";
+            import { initializeApp } from "https://www.gstatic.com/firebasejs/9.12.1/firebase-app.js";
         import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.12.1/firebase-analytics.js";
         import { getDatabase, set, ref, get, child, onValue, update } from "https://www.gstatic.com/firebasejs/9.12.1/firebase-database.js"
         // TODO: Add SDKs for Firebase products that you want to use
@@ -369,37 +370,7 @@
                               
                                `
                                posts.appendChild(post);
-                               $(".upvote").click(function() {
-                get(child(dbref, "posts/" + window.localStorage.getItem("cp"))).then(function(snapshot) {
-                    update(ref(db, "posts/" + window.localStorage.getItem("cp")), {
-                        votes: snapshot.val().votes/1 + 1
-                    });
-                })
-                
-            });
-            $(".downvote").click(function() {
-                get(child(dbref, "posts/" + window.localStorage.getItem("cp"))).then(function(snapshot) {
-                    update(ref(db, "posts/" + window.localStorage.getItem("cp")), {
-                        votes: snapshot.val().votes/1 - 1
-                    });
-                })
-                
-            });
-            $(".comment").click(function() {
-                // make a random number for the comment id
-                let content = prompt("What do you want to say?");
-                var num = Math.floor(Math.random(1000 - 1) * 1000);
 
-
-               update(ref(db, "posts/" + window.localStorage.getItem("cp") + "/" + "comments/" + num), {
-                    content: content,
-                    id: num, 
-                    username: window.localStorage.getItem("username")
-               })
-            });
-            $(".vcomment").click(function() {
-                window.location.href = "comments.html";
-            });
                 }
                 else {
 
@@ -420,39 +391,7 @@
                                    
                                     `
                 posts.appendChild(post);
-                $(".upvote").click(function() {
-                get(child(dbref, "posts/" + window.localStorage.getItem("cp"))).then(function(snapshot) {
-                    update(ref(db, "posts/" + window.localStorage.getItem("cp")), {
-                        votes: snapshot.val().votes/1 + 1
-                    });
-                })
-                
-            });
-            $(".downvote").click(function() {
-                get(child(dbref, "posts/" + window.localStorage.getItem("cp"))).then(function(snapshot) {
-                    update(ref(db, "posts/" + window.localStorage.getItem("cp")), {
-                        votes: snapshot.val().votes/1 - 1
-                    });
-                })
-                
-            });
-            $(".comment").click(function() {
-                // make a random number for the comment id
-                let content = prompt("What do you want to say?");
-                var num = Math.floor(Math.random(1000 - 1) * 1000);
-
-
-               update(ref(db, "posts/" + window.localStorage.getItem("cp") + "/" + "comments/" + num), {
-                    content: content,
-                    id: num, 
-                    username: window.localStorage.getItem("username")
-               })
-            });
-            $(".vcomment").click(function() {
-                window.location.href = "comments.html";
-            });
                                 }});
-
         })
         
         onValue(postRef, (snapshot) => {
@@ -480,37 +419,7 @@
                               
                                `
                                posts.appendChild(post);
-                               $(".upvote").click(function() {
-                get(child(dbref, "posts/" + window.localStorage.getItem("cp"))).then(function(snapshot) {
-                    update(ref(db, "posts/" + window.localStorage.getItem("cp")), {
-                        votes: snapshot.val().votes/1 + 1
-                    });
-                })
-                
-            });
-            $(".downvote").click(function() {
-                get(child(dbref, "posts/" + window.localStorage.getItem("cp"))).then(function(snapshot) {
-                    update(ref(db, "posts/" + window.localStorage.getItem("cp")), {
-                        votes: snapshot.val().votes/1 - 1
-                    });
-                })
-                
-            });
-            $(".comment").click(function() {
-                // make a random number for the comment id
-                let content = prompt("What do you want to say?");
-                var num = Math.floor(Math.random(1000 - 1) * 1000);
 
-
-               update(ref(db, "posts/" + window.localStorage.getItem("cp") + "/" + "comments/" + num), {
-                    content: content,
-                    id: num, 
-                    username: window.localStorage.getItem("username")
-               })
-            });
-            $(".vcomment").click(function() {
-                window.location.href = "comments.html";
-            });
                 }
                 else {
 
@@ -535,7 +444,12 @@
                                    
                                     `
                 posts.appendChild(post);
-                $(".upvote").click(function() {
+                                }
+                                });
+                            
+            });
+          window.setTimeout(function() {
+            $(".upvote").click(function() {
                 get(child(dbref, "posts/" + window.localStorage.getItem("cp"))).then(function(snapshot) {
                     update(ref(db, "posts/" + window.localStorage.getItem("cp")), {
                         votes: snapshot.val().votes/1 + 1
@@ -566,11 +480,7 @@
             $(".vcomment").click(function() {
                 window.location.href = "comments.html";
             });
-                                }
-                                });
-                            
-            });
-         
+          }, 1000)
           
 
        
