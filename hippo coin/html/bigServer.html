@@ -10,18 +10,12 @@
     <div class="top">
         <h2>Global server</h2>
     </div>
-    <div class="side">
-        <h2>Users</h2>
-        <ul id="online">
-
-        </ul id="offline">
-        <ul>
-
-        </ul>
-    </div>
-    <ul class="chanel">
+  
+    <div class="cc">
+    <ul id="chanel">
 
     </ul>
+    </div>
     <div id="bottom">
         <input type="text" id="message" placeholder="enter message">
         
@@ -29,6 +23,7 @@
     <!-- jquery-->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <style>
+
         * { 
             margin: 0;
             padding: 0;
@@ -63,23 +58,18 @@
             font-family: mainfont;
             text-shadow: 2px 2px 2px black;
         }
-        .side {
-            background-color: rgb(26, 26, 26);
-            height: 90%;
-            width: 10%;
-            color: white;
-            border-right: white solid 1px;
-            text-align: center;
-            
-          
-           
-        }
+       
         body {
             background-color: rgb(21, 21, 21);
             font-family: monofont;
             color: white;
             height: 100vh;
             overflow: hidden;
+        }
+        ul {
+            height: 70vh;
+            width: 100%;
+            overflow-x: scroll;
         }
         input {
             background-color: rgb(42, 38, 38);
@@ -89,8 +79,29 @@
             color: white;
             height: 3em;
             width: 80%;
-            margin-left: 15%;
+            margin-left: 10%;
+            margin-top: 10%;
             text-align: center;
+        }
+        li { 
+            display: flex;
+            justify-content: left;
+            width: 100%;
+            align-items: center;
+            margin-bottom: .5%;
+            padding: .5% 0% .5% 0%;
+        }
+        li:hover {
+            background-color: rgb(40, 36, 36);
+        }
+        .name {
+            margin-left: 5%;
+        }
+        .message {
+            margin-left: 5%;
+        }
+        .img {
+            margin-left: 5%;
         }
     </style>
     <script type="module">
@@ -136,9 +147,53 @@
         const db = getDatabase(app);
         const dbref = ref(db);
         // doms vars
-        const online = document.getElementById("online");
-        const offline = document.getElementById("offline");
         const message = document.getElementById("message");
+        function sendMessage() {
+            get(child(dbref, "users/" + "number")).then(function(snapshot) {
+                // send the message
+                var gn = snapshot.val().num2;
+                var date = new Date();
+                set(ref(db, "bigServer/" + gn), {
+                    message: message.value,
+                    name: window.localStorage.getItem("username"),
+                    profile: window.localStorage.getItem("propic"),
+                    Date: date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds()
+                });
+                // update the number 
+                update(ref(db, "users/" + "number"), {
+                    num2: gn/1 + 1
+                });
+
+                
+            });
+
+           
+        }
+        
+        var chanel = document.getElementById("chanel");
+            onValue(ref(db, "bigServer"), function(snapshot) {
+                chanel.innerHTML = "";
+                snapshot.forEach(function(childSnapshot) {
+                    var childKey = childSnapshot.key;
+                    var childData = childSnapshot.val();
+                    var post = document.createElement("li");
+                    post.innerHTML = `
+                    <img src="${childData.profile}" alt="" style="width: 3em; height: 3em; border-radius: 50%; " class="img">
+                    <h3 style="font-family: mainfont;" class="name">${childData.name}</h3>
+                    <h6 style="margin-left: 1%">${childData.Date}</h6>
+                    <p class="message"> ${childData.message}</p>
+                    `
+
+                    chanel.appendChild(post);
+                        });
+                        // scroll to bottom
+                        chanel.scrollTop = chanel.scrollHeight;
+                        setTimeout(function() {
+                           message.value = "";
+                        }, 100);
+            });
+        
+        
 
     </script>
 </body>
