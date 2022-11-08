@@ -62,6 +62,9 @@
         create.addEventListener("click", createStorefront);
         find.addEventListener("click", findStorefront);
         manage.addEventListener("click", manageStorefront);
+        if(window.localStorage.getItem(num) == null) {
+            window.localStorage.setItem("num", 0)
+        }
         // functions
         function createStorefront() {
             const storefrontName = prompt("What is the name of your storefront?");
@@ -92,7 +95,7 @@
                 productImg: productImg,
                 productPrice: productPrice,
                 productDescription: productDescription,
-              
+                id: num
             });
             window.location.href = "./sfv.html";
         }
