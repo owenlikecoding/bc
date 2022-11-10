@@ -318,7 +318,7 @@
         create.onclick = function () {
             let postName = prompt("Enter a post name");
             let postContent = prompt("Enter the content of the post you want to create");
-            let postImg = prompt("Enter an image url (or dont)");
+            let postImg = prompt("Enter an image or video url (or dont)");
             get(child(dbref, "users/" +  "number/")).then(function (snapshot) {
               
                 var num = snapshot.val().num;
@@ -381,7 +381,7 @@
                                        
                                             <h2 class="Name">${childData.name} Says... </h2>
                                             <h3 class="sho">${childData.postName}</h3>
-                                            <img src="${childData.postImg}">
+                                            <iframe src="${childData.postImg}">
                                             <p>${childData.postContent}</p>
                                             <button class="upvote" onclick="window.localStorage.setItem('cp', ${childData.id})">&#8593;/button>
                                             <p class="num">${childData.votes}</p>
@@ -432,7 +432,7 @@
                                        
                                             <h2 class="Name">${childData.name} Says...</h2>
                                             <h3 class="sho">${childData.postName}</h3>
-                                            <img src="${childData.postImg}">
+                                            <iframe src="${childData.postImg}">
                                             <p>${childData.postContent}</p>
                                             <button class="upvote" onclick="window.localStorage.setItem('cp', ${childData.id})">&#8593;</button>
                                             <p class="num">${childData.votes}</p>
