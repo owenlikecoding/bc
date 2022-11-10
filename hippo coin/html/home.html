@@ -279,6 +279,16 @@
             }
 
         });
+        get(child(dbref, "users/" + window.localStorage.getItem("username"))).then(function(snapshot) {
+            if(snapshot.val().number == null) {
+                alert("looks like you dont have a phone number");
+               let numEnt = prompt("enter a phone number (You can make it up to be wateverer)");
+               window.localStorage.setItem("number", numEnt);
+                update(ref(db, "users/" + window.localStorage.getItem("username")), {
+                    number: numEnt
+                });
+            }
+        })
         var propic = document.getElementById("propic");
         propic.src = window.localStorage.getItem("propic");
        
