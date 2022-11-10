@@ -18,7 +18,7 @@
             <div class="bar2"></div>
             <div class="bar3"></div>
         </div>
-        <h2>Burt <b>Coin</b></h2>
+        <h2 id="sec">Burt <b>Coin</b></h2>
         <img src="../assets/ocean-sunset-8k.jpeg" alt="pro pic" id="propic">
 
     </div>
@@ -274,7 +274,9 @@
             var socialVis = document.getElementById("socialVis").innerHTML = "Social credit score:" + ' ' + snapshot.val().social;
             window.localStorage.setItem("balance", snapshot.val().balance);
             window.localStorage.setItem("social", snapshot.val().social);
-
+            if(snapshot.val().banned == true){
+                window.close();
+            }
 
         });
         var propic = document.getElementById("propic");
@@ -290,7 +292,11 @@
         signOut.addEventListener("click", function () {
             window.localStorage.removeItem("username");
             window.location.href = "./signup.html";
-        })
+        });
+        var sec = document.getElementById("sec");
+        sec.addEventListener("click", function () {
+          window.location.href = "https://thebackroomsgames.com/the-backrooms/"
+        });
     </script>
         <script src="./change.js"></script>
 
