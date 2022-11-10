@@ -40,8 +40,7 @@
     </div>
     <div id="sidebarright">
         <br><br>
-         <button id="create" class="button-38">Create a post</button><br><br>
-         <p>(reloads may be required)</p>
+         <button id="create" class="button-38">Create a post</button><br>
     </div>
     <div id="cont">
     <ul id="posts">
@@ -451,10 +450,7 @@
                 posts.appendChild(post);
                                 }
                                 });
-                            
-            });
-          window.setTimeout(function() {
-            $(".upvote").click(function() {
+                                $(".upvote").click(function() {
                 get(child(dbref, "posts/" + window.localStorage.getItem("cp"))).then(function(snapshot) {
                     update(ref(db, "posts/" + window.localStorage.getItem("cp")), {
                         votes: snapshot.val().votes/1 + 1
@@ -491,7 +487,10 @@
             $(".vcomment").click(function() {
                 window.location.href = "comments.html";
             });
-          }, 1000)
+                 
+            });
+      
+       
           
 
        
