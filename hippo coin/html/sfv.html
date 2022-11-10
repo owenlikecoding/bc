@@ -125,6 +125,12 @@
                                     }
             });
         });
+        // get colors from db
+        onValue(child(dbref, 'storefronts/' + window.localStorage.getItem("storefrontName")), function(snapshot) {
+            var childData = snapshot.val();
+            document.body.style.backgroundColor = childData.backgroundColor;
+            document.body.style.color = childData.textColor;
+        });
            
 
 
