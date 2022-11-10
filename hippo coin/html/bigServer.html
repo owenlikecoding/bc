@@ -151,9 +151,9 @@
         // doms vars
         const message = document.getElementById("message");
         function sendMessage() {
-            get(child(dbref, "users/" + "number")).then(function(snapshot) {
+            get(child(dbref, "users/" + "number2")).then(function(snapshot) {
                 // send the message
-                var gn = snapshot.val().num2;
+                var gn = snapshot.val().num;
                 var date = new Date();
                 set(ref(db, "bigServer/" + gn), {
                     message: message.value,
@@ -162,8 +162,8 @@
                     Date: date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds()
                 });
                 // update the number 
-                update(ref(db, "users/" + "number"), {
-                    num2: gn/1 + 1
+                update(ref(db, "users/" + "number2"), {
+                    num: gn/1 + 1
                 });
 
                 
