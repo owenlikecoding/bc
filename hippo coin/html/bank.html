@@ -13,6 +13,7 @@
         <h1 style="text-shadow: 2px 2px black;">Banking</h1>
         <button id="create" class="button-38">Create a bank</button><br><br>
         <button id="bank" class="button-38">Access your banking</button><br><br>
+        <button id="trans" class="button-38">Create Transaction</button><br>
         <a href="./home.html">Back to home</a>
     </div>
     <script src="./change.js"></script>
@@ -202,6 +203,34 @@
         
            
         });
+        var trans = document.getElementById("trans");
+        trans.onclick = function() {
+            let amount = prompt("How much do you want to transfer?");
+            let username = prompt("Enter the username you want to transfer to");
+            get(child(dbref, "users/" + username)).then(function(snapshot) {
+                if(snapshot.exists()) {
+                    if(window.localStorage.getItem("balance") < amount) {
+                        alert("You dont have that much money");
+                    }
+                    
+                    else {
+                        let newbalance = parseInt(window.localStorage.getItem("balance")) - parseInt(amount);
+                        window.localStorage.setItem("balance", newbalance);
+                        update(ref(db, "users/" + window.localStorage.getItem("username")), {
+                            balance: newbalance
+                        });
+                        let newbalance2 = parseInt(snapshot.val().balance) + parseInt(amount);
+                        update(ref(db, "users/" + username), {
+                            balance: newbalance2
+                        });
+                        alert("You have transfered " + amount + " coins to " + username);
+                    }
+                }
+                else {
+                    alert("This user does not exist");
+                }
+            });
+        }
 
     </script>
     <style>

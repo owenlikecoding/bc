@@ -22,17 +22,22 @@
     <div id="bankUi" style="display: none;">
         <div id="bank">
             <h2>Bank</h2>
+           
             <p id="balance">Balance: $0</p>
             <p id="bankName">Bank: None</p>
             <p id="bankId">Bank id: None</p>
             <p id="bankPin">Bank pin: None</p>
             <button class="button-38" id="deleteBank">Delete bank</button>
             <button class="button-38" id="changePin">Change pin</button>
+            <button id="cub" class="button-38">Change users balance</button>
         </div>
         <div id="transactions">
             <h2>Transactions</h2>
             <p id="transactionsVis">No transactions</p>
         </div>
+        <h2>Users in your bank</h2>
+        <ul id="usersInbank"></ul>
+        
     </div>
         <script type="module">
             // firebase 
@@ -63,6 +68,8 @@
         var username = document.getElementById("username");
         var password = document.getElementById("password");
         var sub = document.getElementById("sub");
+        var usersInbank = document.getElementById("usersInbank");
+
         // get the click event from sub
         if(window.localStorage.getItem("scope") == "l") {
             document.getElementById("signIn").style.display = "none";
@@ -93,7 +100,7 @@
                      if (snapshot.val().password == password.value) {
                         var signIn = document.getElementById("signIn").style.display = "none";
                         var bankUi = document.getElementById("bankUi").style.display = "block";
-                        window.localStorage.removeItem("scope")
+                        window.localStorage.setItem("scope", "l")
                           alert("correct password");
                      } else {
                           alert("wrong password");
@@ -130,6 +137,33 @@
         }).catch(function (error) {
             console.error(error);
         })
+        get(child(dbref, "banks/" + window.localStorage.getItem("bank") + "/" + "users/")).then(function (snapshot) {
+            snapshot.forEach(function (childSnapshot) {
+            var childKey = childSnapshot.key;
+                var childData = childSnapshot.val();
+                var post = document.createElement("li");
+                    post.innerHTML = `<div class="post">
+                        <h2>Name: ${childData.name}</h2>
+                        <p>Password: ${childData.password}</p>
+                        <p>Balance: ${childData.balance}</p>
+                                        </div>
+                               
+                              
+                               `
+                               usersInbank.appendChild(post);
+                            });
+        });
+        var cub = document.getElementById("cub");
+        cub.onclick = function() {
+            var name = prompt("Enter name the users name");
+            var newBalance = prompt("Enter the users new balance");
+            update(ref(db, "users/" + name), {
+                balance: newBalance
+            });
+            setTimeout(function() {
+                window.location.reload();
+            }, 1000); 
+        }
         </script>
         <style>
             @keyframes colorchange {
@@ -171,7 +205,7 @@
             margin-left: 30%;
             margin-top: 10%;
             width: 30%;
-            height: 30%;
+            height: auto;
             background: rgb(39, 39, 42);
             display: flex;
             flex-direction: column;
