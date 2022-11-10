@@ -14,6 +14,7 @@
     </div>
     <div class="list">
         <h2>Users</h2>
+        <p>(click on user to dm)</p>
         <ul id="UserList">
 
         </ul>
@@ -26,6 +27,7 @@
             padding: 0;
             box-sizing: border-box;
         }
+    
         @font-face {
             font-family: monofont;
             src: url("../fonts/JetBrainsMono-Regular.ttf");
@@ -33,6 +35,11 @@
         @font-face {
             font-family: mainfont;
             src: url("../fonts/uni-sans.heavy-caps.otf");
+        }
+        ul {
+            list-style: none;
+            width: 100%;
+            margin-left: 10%;
         }
         .top {
             background-color: rgb(9, 28, 104);
@@ -97,7 +104,7 @@
                 userKeys.forEach((key) => {
                     const user = users[key];
                     const li = document.createElement("li");
-                    li.innerHTML = `<p onclick="window.localStorage.setItem('cu', '${user.username}')" >${user.username}</p> - ${user.social}`;
+                    li.innerHTML = `<p onclick="window.localStorage.setItem('cu', '${user.number}')" >${user.username}</p> - ${user.social}`;
                     userList.appendChild(li);
                 })
             } else {

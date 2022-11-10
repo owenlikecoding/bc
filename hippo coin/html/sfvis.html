@@ -123,8 +123,9 @@ setTimeout(function() {
             update(ref(db, "users/" + window.localStorage.getItem("username") + "/"), {
                 balance: newBalance
             });
-            alert("Go to the owner of " + window.localStorage.getItem("sv") + " to get your product");
+            alert("Dm to the owner of " + window.localStorage.getItem("sv") + " to get your product");
             remove(ref(db, "storefronts/" + window.localStorage.getItem("sv") + "/" + window.localStorage.getItem("z") + "/"));
+            window.location.href = "./rdms.html";
            }
         })
            
