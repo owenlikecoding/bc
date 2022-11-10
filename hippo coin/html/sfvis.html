@@ -8,10 +8,38 @@
     <link rel="stylesheet" href="./main.css">
 </head>
 <body>
+    <script src="./change.js"></script>
+
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <div id="top">
+    <h1 id="storefrontName"></h1>
+    <h3 id="storefrontDesc"></h3>
+    </div>
     <h2>products:</h2>
+
     <ul id="pro">
     </ul>
+    <style>
+        #top {
+            background-color: rgb(9, 28, 104);
+            height: 7vh;
+            display: flex;
+            align-items: center;
+            justify-content: space-evenly;
+            width: 100%;
+            color: white;
+            font-family: mainfont;
+            display: flex;
+            justify-content: space-evenly;
+            align-items: center;
+        }
+        ul {
+            list-style-type: none;
+            width: 80%;
+            border: rgb(255, 255, 255) solid 1px;
+        }
+
+    </style>
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.12.1/firebase-app.js";
         import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.12.1/firebase-analytics.js";
@@ -35,7 +63,15 @@
         const dbref = ref(db);
         var sv = window.localStorage.getItem("sv");
         var pro = document.getElementById("pro");
+        var sf = document.getElementById("storefrontName");
+        var sfd = document.getElementById("storefrontDesc");
         document.title = sv;
+        onValue(child(dbref, "storefronts/" + sv), (snapshot) => {
+            const data = snapshot.val();
+            sf.innerHTML = data.name;
+            sfd.innerHTML = data.description;
+        });
+
        
           // get products from db
           get(child(dbref, "storefronts/" + window.localStorage.getItem("sv"))).then( function(snapshot) {
@@ -47,6 +83,7 @@
                 if(childData.product === undefined) {
                     post.innerHTML = ""
                 }
+
               
               
                 else {
@@ -61,6 +98,10 @@
                         pro.appendChild(post);
                 }
             });
+            if(snapshot.val().background !== undefined) {
+                document.body.style.background = `${snapshot.val().background}`;
+                document.body.style.color = `${snapshot.val().textColor}`;
+            }
         });
 setTimeout(function() {
       $(".buy").click(function() {

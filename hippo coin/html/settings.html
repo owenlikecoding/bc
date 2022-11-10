@@ -7,10 +7,22 @@
     <title>Setting</title>
 </head>
 <body>
-    <h1>settings</h1><br><br>
+    <h1>settings</h1>
+    <a href="./home.html">Back to home</a>
+    <br><br>
     <div id="settings">
+    <h2 style="font-family: monofont;">Change profile picture</h2><br>
     <input type="text" id="profile" placeholder="enter a image url for profile picture">
-    <button class="button-38" id="but">Submit</button>
+    <br>
+    <h2 style="font-family: monofont;">Change background color</h2><br>
+    <input type="color" id="color" placeholder="enter a color">
+    <br>
+    <h2 style="font-family: monofont;">Change text color</h2><br>
+    <input type="color" id="textColor" ><br>
+
+    <br>
+
+    <button class="button-38" id="but">Submit Changes</button>
     </div>
     <script type="module">
         
@@ -41,6 +53,8 @@
         var but = document.getElementById("but");
         but.onclick = function() {
             window.localStorage.setItem("propic", profile.value);
+            window.localStorage.setItem("textColor", document.getElementById("color").value);
+            window.localStorage.setItem("bgColor", document.getElementById("textColor").value);
             update(ref(db, "users/" + window.localStorage.getItem("username")), {
                 propic: profile.value
             });
@@ -51,6 +65,8 @@
             
         }
     </script>
+        <script src="./change.js"></script>
+
     <style>
         * {
             margin: 0;

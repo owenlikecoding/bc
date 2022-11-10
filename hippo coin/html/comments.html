@@ -13,6 +13,8 @@ ul {
     list-style: none;
 }
     </style>
+        <script src="./change.js"></script>
+
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.12.1/firebase-app.js";
         import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.12.1/firebase-analytics.js";
@@ -32,6 +34,7 @@ ul {
             measurementId: "G-5CD9ZFYH8K"
         };
 
+
         // Initialize Firebase
         const app = initializeApp(firebaseConfig);
         const analytics = getAnalytics(app);
@@ -46,7 +49,7 @@ ul {
             var childKey = childSnapshot.key;
                 var childData = childSnapshot.val();
                 var post = document.createElement("li");
-                    com.innerHTML = `<div class="post">
+                    post.innerHTML = `<div class="post">
                         <h2>${childData.username}</h2>
                         <p>${childData.content}</p>
                                         </div>

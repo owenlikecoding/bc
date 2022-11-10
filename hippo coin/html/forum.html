@@ -11,6 +11,8 @@
 
 <body>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="./change.js"></script>
+
     <div id="topbar">
 
         <div class="container" id="menu">
@@ -27,10 +29,9 @@
         <div id="links">
             <br><br>
             <a href="./forum.html">Forums</a><br><br>
-            <a href="">DMs</a><br><br>
-            <a href="">Storefronts</a><br><br>
-            <a href="">Account</a><br><br>
-            <a href="">Settings</a><br><br>
+            <a href="./dms.html">DMs</a><br><br>
+            <a href="./sf.html">Storefronts</a><br><br>
+            <a href="./settings.html">Settings</a><br><br>
             <a href="./bank.html">Banking</a><br><br>
             <a href="./home.html">Home</a>
         </div>
@@ -40,6 +41,7 @@
     <div id="sidebarright">
         <br><br>
          <button id="create" class="button-38">Create a post</button><br><br>
+         <p>(reloads may be required)</p>
     </div>
     <div id="cont">
     <ul id="posts">
@@ -361,6 +363,7 @@
                                             <p class="num">${childData.votes}</p>
                                             <button class="downvote" onclick="window.localStorage.setItem('cp', ${childData.id})">&#8595;</button><br>
                                             <button class="comment" onclick="window.localStorage.setItem('cp', ${childData.id})">💬</button>
+                                            <button class="vcomment" onclick="window.localStorage.setItem('cp', ${childData.id})">View Comments💬</button>
 
                                    
                                    
@@ -385,6 +388,7 @@
                                             <p class="num">${childData.votes}</p>
                                             <button class="downvote" onclick="window.localStorage.setItem('cp', ${childData.id})">&#8595;</button><br>
                                             <button class="comment" onclick="window.localStorage.setItem('cp', ${childData.id})">💬</button>
+                                            <button class="vcomment" onclick="window.localStorage.setItem('cp', ${childData.id})">View Comments💬</button>
                                     
                                     </div>
                                     
@@ -411,7 +415,8 @@
                                             <p class="num">${childData.votes}</p>
                                             <button class="downvote" onclick="window.localStorage.setItem('cp', ${childData.id})">&#8595;</button><br>
                                             <button class="comment" onclick="window.localStorage.setItem('cp', ${childData.id})">💬</button>
-                                   
+                                            <button class="vcomment" onclick="window.localStorage.setItem('cp', ${childData.id})">View Comments💬</button>
+
                                    
                                
                                </div>
@@ -468,14 +473,20 @@
             $(".comment").click(function() {
                 // make a random number for the comment id
                 let content = prompt("What do you want to say?");
-                var num = Math.floor(Math.random(1000 - 1) * 1000);
-
-
-               update(ref(db, "posts/" + window.localStorage.getItem("cp") + "/" + "comments/" + num), {
+               // make a random number beewteen 1 and 100000
+                get(child(dbref, "users/" + "number")).then(function(snapshot) {
+                    let num = snapshot.val().num;
+                    update(ref(db, "users/" + "number"), {
+                        number: num + 1
+                    });
+                    update(ref(db, "posts/" + window.localStorage.getItem("cp") + "/" + "comments/" + num), {
                     content: content,
                     id: num, 
                     username: window.localStorage.getItem("username")
                })
+                })
+               
+              
             });
             $(".vcomment").click(function() {
                 window.location.href = "comments.html";
@@ -490,7 +501,7 @@
                 var topbar = document.getElementById("topbar").style.display = "flex"
             }
         }
-          
+        
        
     </script>
 </body>

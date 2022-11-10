@@ -16,6 +16,14 @@
         <h2 id="description">Storefront description: </h2>
      
         </div><br>
+        <div id="cust" style="border: 2px rgb(255, 255, 255) solid;">
+            <h2>Customize</h2><br>
+            <p>background-color</p><br>
+        <input type="color" style="width: 30px;" id="backgroundColor"><br><br>
+        <p>text-color</p><br>
+        <input type="color" style="width: 30px;" id="textColor"><br>
+        <button id="sub">Submit</button>
+        </div><br>
         <button id="CreateProduct" class="button-38">Create product</button><br><br>
         <h2>products:</h2>
         <ul id="pro">
@@ -29,6 +37,8 @@
 
 
         </style>
+            <script src="./change.js"></script>
+
     <script type="module">
         // Import the functions you need from the SDKs you need
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.12.1/firebase-app.js";
@@ -79,6 +89,15 @@
     
         });
         // get data from db
+        var backgroundColor = document.getElementById("backgroundColor");
+        var textColor = document.getElementById("textColor");
+        var sub = document.getElementById("sub");
+        sub.addEventListener("click", () => {
+            update(ref(db, "storefronts/" + window.localStorage.getItem("storefrontName") + "/"), {
+                backgroundColor: backgroundColor.value,
+                textColor: textColor.value
+            });
+        });
         get(child(dbref, 'storefronts/' + window.localStorage.getItem("storefrontName"))).then(function(snapshot) {
             name.innerHTML = "storefront name:"  + ' ' +snapshot.val().name;
             description.innerHTML = "storefront description:"  + ' ' +snapshot.val().description;
