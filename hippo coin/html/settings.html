@@ -22,7 +22,9 @@
 
     <br>
 
-    <button class="button-38" id="but">Submit Changes</button>
+    <button class="button-38" id="but">Submit Changes</button><br>
+    <!-- reset to default button-->
+    <button class="button-38" id="reset">Reset to default</button>
     </div>
     <script type="module">
         
@@ -63,6 +65,11 @@
             }, 500)
           
             
+        }
+        var reset = document.getElementById("reset");
+        reset.onclick = function() {
+            window.localStorage.setItem("color", "#111827");
+            window.localStorage.setItem("textColor", "#fff");
         }
     </script>
         <script src="./change.js"></script>
