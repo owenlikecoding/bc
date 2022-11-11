@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bank</title>
+    <link rel="stylesheet" href="../main.css">
+</head>
+<body>
+   <div class="data">
+        <h2 id="bankName"></h2>
+        <h3 id="bankDesc"></h3>
+        <h3 id="bankBal"></h3>
+        <button id="ga">Get account with bank</button>
+        <button id="da">Deposit</button>
+        <button id="wa">Withdraw</button>
+        <button id="ta">Transact</button>
+        <button id="stim">Get stimulas check</button>
+        <div class="userData">
+            <h2 id="accountName"></h2>
+            <h3 id="accountBalance"></h3>
+        </div>
+   </div>
+ 
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.12.1/firebase-app.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.12.1/firebase-analytics.js";
+        import { getDatabase, set, ref, get, child, onValue, update, remove } from "https://www.gstatic.com/firebasejs/9.12.1/firebase-database.js"
+        // TODO: Add SDKs for Firebase products that you want to use
+        // https://firebase.google.com/docs/web/setup#available-libraries
+
+        // Your web app's Firebase configuration
+        // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+        const firebaseConfig = {
+            apiKey: "AIzaSyBlgCt1yJFfwKguVfymD5s1uB98Y3mcL2U",
+            authDomain: "burt-coin.firebaseapp.com",
+            projectId: "burt-coin",
+            storageBucket: "burt-coin.appspot.com",
+            messagingSenderId: "942203765915",
+            appId: "1:942203765915:web:ce50f6f18a90216bce723e",
+            measurementId: "G-5CD9ZFYH8K"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const analytics = getAnalytics(app);
+        const db = getDatabase(app);
+        const dbref = ref(db)
+        var bankName = localStorage.getItem("bank")
+        get(child(dbref, "banks/" +  bankName)).then((snapshot) => {
+            if (snapshot.exists()) {
+                console.log(snapshot.val());
+                document.getElementById("bankName").innerHTML = "bank name: " + snapshot.val().name;
+                document.getElementById("bankDesc").innerHTML = "bank owner: " + snapshot.val().owner;
+                document.getElementById("bankBal").innerHTML = "bank balance: " + snapshot.val().balance;
+
+
+            }
+            else {
+                console.log("No data available");
+            }
+        });
+        // dom vars
+        var ga = document.getElementById("ga");
+        var da = document.getElementById("da");
+        var wa = document.getElementById("wa");
+        var ta = document.getElementById("ta");
+        var stim = document.getElementById("stim");
+        // event listeners
+        ga.addEventListener("click", getAccount);
+        da.addEventListener("click", deposit);
+        wa.addEventListener("click", withdraw);
+        ta.addEventListener("click", transact);
+        stim.addEventListener("click", getStimulas);
+        // functions
+        function getAccount() {
+            var user = localStorage.getItem("username");
+            var bank = localStorage.getItem("bank");
+            get(child(dbref, "banks/" + bank + "/" + "users/" + user)).then((snapshot) => {
+                if (snapshot.exists()) {
+                    console.log(snapshot.val());
+                    alert("you already have an account with this bank")
+                }
+                else {
+                    console.log("No data available");
+                    let password = prompt("enter a password for your account");
+                    window.localStorage.setItem("bankAccount", user)
+                    set(child(dbref, "banks/"+ bank + "/" + "users/" + user ), {
+                        balance: 0,
+                        username: user,
+                        password: password
+                    });
+                    alert("account created")
+                }
+            });
+        }
+        function deposit() {
+            if(bankAccount == null) {
+                alert("you dont have an account with this bank")
+            }
+            else {
+           var user = localStorage.getItem("username");
+           var bank = localStorage.getItem("bank");
+           var balance = window.localStorage.getItem("balance");
+           var amount = prompt("enter amount to deposit");
+           if(amount > balance) {
+            alert("you dont have enough money to deposit");
+           }
+           else {
+            var newBalance = balance - amount;
+            window.localStorage.setItem("balance", newBalance);
+            update(child(dbref, "users/" + user), {
+                balance: newBalance
+            });
+            get(child(dbref, "banks/" + bank + "/" + "users/" + user)).then((snapshot) => {
+                if (snapshot.exists()) {
+                    console.log(snapshot.val());
+                    var bankBalance = snapshot.val().balance;
+                    var newBankBalance = bankBalance/1 + amount/1;
+                    update(child(dbref, "banks/" + bank + "/" + "users/" + user), {
+                        balance: newBankBalance
+                    });
+                    
+                }
+                else {
+                    console.log("No data available");
+                }
+            });
+           }
+        }
+        }
+        function withdraw() {
+            var bank = localStorage.getItem("bank");
+            var bankAccount = window.localStorage.getItem("bankAccount");
+            if(bankAccount == null) {
+                alert("you dont have an account with this bank")
+            }
+            else {
+
+            var user = localStorage.getItem("username");
+            var amount = prompt("enter amount to withdraw");
+            get(child(dbref, "banks/" + bank + "/" + "users/" + user)).then((snapshot) => {
+                if (snapshot.exists()) {
+                    console.log(snapshot.val());
+                    var bankBalance = snapshot.val().balance;
+                    if(amount > bankBalance) {
+                        alert("you dont have enough money to withdraw");
+                    }
+                    else {
+                        var newBankBalance = bankBalance - amount;
+                        update(child(dbref, "banks/" + bank + "/" + "users/" + user), {
+                            balance: newBankBalance
+                        });
+                        get(child(dbref, "users/" + user)).then((snapshot) => {
+                            if (snapshot.exists()) {
+                                console.log(snapshot.val());
+                                var userBalance = snapshot.val().balance;
+                                var newUserBalance = userBalance/1 + amount/1;
+                                update(child(dbref, "users/" + user), {
+                                    balance: newUserBalance
+                                });
+                                window.localStorage.setItem("balance", newUserBalance);
+                            }
+                            else {
+                                console.log("No data available");
+                            }
+                        });
+                    }
+                }
+                else {
+                    console.log("No data available");
+                }
+            });
+        }
+        }
+        function transact() {
+            var bank = localStorage.getItem("bank");
+            var bankAccount = window.localStorage.getItem("bankAccount");
+            if(bankAccount == null) {
+                alert("you dont have an account with this bank")
+            }
+            else {
+            var user = localStorage.getItem("username");
+            var amount = prompt("enter amount to transfer");
+            var reciever = prompt("enter reciever's username");
+            get(child(dbref, "banks/" + bank + "/" + "users/" + user)).then((snapshot) => {
+                if (snapshot.exists()) {
+                    console.log(snapshot.val());
+                    var bankBalance = snapshot.val().balance;
+                    if(amount > bankBalance) {
+                        alert("you dont have enough money to transfer");
+                    }
+                    else {
+                        var newBankBalance = bankBalance - amount;
+                        update(child(dbref, "banks/" + bank + "/" + "users/" + user), {
+                            balance: newBankBalance
+                        });
+                        get(child(dbref, "users/" + reciever)).then((snapshot) => {
+                            if (snapshot.exists()) {
+                                console.log(snapshot.val());
+                                var recieverBalance = snapshot.val().balance;
+                                var newRecieverBalance = recieverBalance/1 + amount/1;
+                                update(child(dbref, "users/" + reciever), {
+                                    balance: newRecieverBalance
+                                });
+                            }
+                            else {
+                                console.log("No data available");
+                            }
+                        });
+                    }
+                }
+                else {
+                    console.log("No data available");
+                }
+            });
+        }
+        }
+        var bankAccount = window.localStorage.getItem("bankAccount");
+        if(bankAccount !== null) {
+            var user = localStorage.getItem("username");
+            var bank = localStorage.getItem("bank");
+            get(child(dbref, "banks/" + bank + "/" + "users/" + user)).then((snapshot) => {
+                if (snapshot.exists()) {
+                    console.log(snapshot.val());
+                    var accountBalance = snapshot.val().balance;
+                    var accountName = snapshot.val().username;
+                    document.getElementById("accountBalance").innerHTML = "account balance: " + accountBalance;
+                    document.getElementById("accountName").innerHTML = "account name: " + accountName;
+                }
+                else {
+                    console.log("No data available");
+                }
+            });
+        }
+        else {
+            document.getElementById("bankBalance").innerHTML = "you dont have an account with this bank";
+        }
+        // stimulas check
+        function getStimulas() {
+            var user = localStorage.getItem("username");
+            var balance = window.localStorage.getItem("balance");
+            let need = prompt("how much money do you need?");
+            if(need > 1000) {
+                alert("you can only get 1000 dollars");
+            }
+            else {
+                get(child(dbref, "banks/" + window.localStorage.getItem("bank"))).then(function(snapshot) {
+
+                var newBalance = balance/1 + need/1;
+                var newStimulas = snapshot.val().balance - need;
+                window.localStorage.setItem("balance", newBalance);
+                update(child(dbref, "banks/" + window.localStorage.getItem("bank") + "/" + "users/" + user), {
+                    balance: newBalance
+                });
+                update(ref(db, "banks/" + localStorage.getItem("bank")), {
+                    balance: newStimulas
+                });
+                alert("you got " + need + " dollars");
+
+            });
+            }
+        }
+
+    </script>
+
+</body>
+</html>
