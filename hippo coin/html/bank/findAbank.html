@@ -46,7 +46,7 @@
                     let bankLi = document.createElement("li");
                     bankLi.innerHTML = bankName;
                     bankLi.setAttribute("id", bankId);
-                    bankLi.setAttribute("onclick", "localStorage.setItem('bankId', this.id); window.location.href = 'bank.html';");
+                    bankLi.setAttribute("onclick", "localStorage.setItem('bank', this.name); window.location.href = 'bank.html';");
                     bankList.appendChild(bankLi);
                 }
             } else {
