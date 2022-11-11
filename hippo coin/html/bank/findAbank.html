@@ -45,8 +45,10 @@
                     let bankId = banks[bank].id;
                     let bankLi = document.createElement("li");
                     bankLi.innerHTML = bankName;
-                    bankLi.setAttribute("id", bankId);
-                    bankLi.setAttribute("onclick", "localStorage.setItem('bank', this.name); window.location.href = 'bank.html';");
+                    bankLi.addEventListener("click", () => {
+                        localStorage.setItem("bank", bankName);
+                        window.location.href = `./bank.html`;
+                    });
                     bankList.appendChild(bankLi);
                 }
             } else {
