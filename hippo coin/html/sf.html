@@ -64,7 +64,7 @@
         create.addEventListener("click", createStorefront);
         find.addEventListener("click", findStorefront);
         manage.addEventListener("click", manageStorefront);
-        if(window.localStorage.getItem(num) == null) {
+        if(window.localStorage.getItem("num") == "NaN") {
             window.localStorage.setItem("num", 0)
         }
         // functions
@@ -88,7 +88,8 @@
             const storefront = {
                 name: storefrontName,
                 description: storefrontDescription,
-                password: password
+                password: password,
+                own: window.localStorage.getItem("username")
             }
             set(ref(db, `storefronts/${storefrontName}`), storefront);
             var num = window.localStorage.getItem("num");

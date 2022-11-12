@@ -102,10 +102,9 @@
                         pro.appendChild(post);
                 }
             });
-            if(snapshot.val().background !== undefined) {
+          
                 document.body.style.background = `${snapshot.val().background}`;
                 document.body.style.color = `${snapshot.val().textColor}`;
-            }
         });
 setTimeout(function() {
       $(".buy").click(function() {

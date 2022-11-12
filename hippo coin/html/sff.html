@@ -46,6 +46,7 @@
                     post.innerHTML = `<div class="said">
                                             <h2 class="name">${childData.name}</h2>
                                             <p class="desc">${childData.description}</p>
+                                            <p class="own">Owned by: ${childData.own}</p>
                                             <a href="./sfvis.html"><button class="btn" onclick="window.localStorage.setItem('sv', '${childData.name}')">Visit</button></a>
                                        </div>
                         `

@@ -65,6 +65,9 @@
         const description = document.getElementById("description");
         const CreateProduct = document.getElementById("CreateProduct");
         // event listeners
+        if(window.localStorage.getItem("num") == "NaN") {
+            window.localStorage.setItem("num", 0)
+        }
         CreateProduct.addEventListener("click", () => {
             const products = prompt("add a product name ");
             const productImg = prompt("add a product image url");
