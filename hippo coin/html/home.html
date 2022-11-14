@@ -280,7 +280,7 @@
 
         });
         get(child(dbref, "users/" + window.localStorage.getItem("username"))).then(function (snapshot) {
-            if (snapshot.val().number === null) {
+            if (snapshot.val().number == null) {
                 alert("Looks like you haven't set up your phone number yet!");
                 let num = window.prompt("Please enter a phone number (It can be whatever you want)");
                 set(ref(db, 'users/' + window.localStorage.getItem("username") + "/number"), num);
