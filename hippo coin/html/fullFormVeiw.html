@@ -79,7 +79,12 @@
             const data = snapshot.val();
             comments.innerHTML = "";
             for (const key in data) {
-                comments.innerHTML += "<li>" + data[key].comment + "</li>";
+                comments.innerHTML = `<div class="comment">
+                    <h3>${data[key].name} says...</h3>
+                    <p>${data[key].content}</p>
+
+                    
+                    `
             }
         });
         // submit comment
@@ -89,7 +94,9 @@
                 sub.addEventListener("click", () => {
                     var c = comment.value;
                     update(child(dbref, "posts/" + p + "/" + "comments/" + n), {
-                        comment: c
+                        id: n,
+                        content: c,
+                        username: window.localStorage.getItem("username")
                     });
                     comment.value = "";
                     update(ref(db, "users/" + "number"), {
