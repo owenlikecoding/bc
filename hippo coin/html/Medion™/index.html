@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Medion™</title>
+
+<body>
+    <div id="topbar">
+        <h1>Medion™</h1>
+        <p>burt coin product (beta)</p>
+    </div>
+    <div id="upload">
+        <input type="text" id="name" placeholder="Enter a video name"><br>
+        <input type="text" id="url" placeholder="enter a video url or youtube embed code"><br>
+        <textarea id="desc" cols="30" rows="10" placeholder="enter a description"></textarea><br>
+        <button id="upload">upload</button>
+    </div>
+    <ul id="videos">
+
+    </ul>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.12.1/firebase-app.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.12.1/firebase-analytics.js";
+        import { getDatabase, set, ref, get, child, onValue, update, remove } from "https://www.gstatic.com/firebasejs/9.12.1/firebase-database.js"
+        // TODO: Add SDKs for Firebase products that you want to use
+        // https://firebase.google.com/docs/web/setup#available-libraries
+
+        // Your web app's Firebase configuration
+        // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+        const firebaseConfig = {
+            apiKey: "AIzaSyBlgCt1yJFfwKguVfymD5s1uB98Y3mcL2U",
+            authDomain: "burt-coin.firebaseapp.com",
+            projectId: "burt-coin",
+            storageBucket: "burt-coin.appspot.com",
+            messagingSenderId: "942203765915",
+            appId: "1:942203765915:web:ce50f6f18a90216bce723e",
+            measurementId: "G-5CD9ZFYH8K"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const analytics = getAnalytics(app);
+        const db = getDatabase(app);
+        const dbref = ref(db);
+        // dom vars 
+        const upload = document.getElementById("upload");
+        const name = document.getElementById("name");
+        const url = document.getElementById("url");
+        const desc = document.getElementById("desc");
+        const videos = document.getElementById("videos");
+        // upload button
+        upload.addEventListener("click", () => {
+            const data = {
+                name: name.value,
+                url: url.value,
+                desc: desc.value,
+                likes: 0,
+                dislikes: 0,
+                comments: 0,
+                views: 0,
+                own: window.localStorage.getItem("username")
+            }
+            set(ref(db, "videos/" + name.value), data);
+        });
+        // get videos
+        onValue(ref(db, "videos"), (snapshot) => {
+            const data = snapshot.val();
+            videos.innerHTML = "";
+            for (const key in data) {
+                const video = data[key];
+                videos.innerHTML += `
+                <li id="vid">
+                    <h2>${video.name}</h2>
+                    <embed src="${video.url}" width="100%" height="800px" onclick="window.localStorage.setItem('vid', video.name)" />
+                    <p>${video.desc}</p>
+                </li>
+                `;
+            }
+        });
+
+
+    </script>
+</body>
+
+</html>
