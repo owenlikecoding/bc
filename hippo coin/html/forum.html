@@ -371,9 +371,9 @@
                 var childData = childSnapshot.val();
                 var post = document.createElement("li");
                 if (childData.postImg == "") {
-                    post.innerHTML = `<div class="post" onclick="window.localStorage.setItem('p', ${childData.id}); window.location.href='./fullFormVeiw.html'">
+                    post.innerHTML = `<div class="post" >
                                        
-                                       <h2 class="Name">${childData.name} Says... </h2>
+                                       <h2 class="Name" onclick="window.localStorage.setItem('p', ${childData.id}); window.location.href='./fullFormVeiw.html'">${childData.name} Says... </h2>
                                        <h3 class="sho">${childData.postName}</h3>
                                        <p>${childData.postContent}</p>
                                       
@@ -396,9 +396,9 @@
                 else {
 
 
-                    post.innerHTML = `<div class="post" onclick="window.localStorage.setItem('p', ${childData.id}); window.location.href='./fullFormVeiw.html'">
+                    post.innerHTML = `<div class="post" >
                                        
-                                            <h2 class="Name">${childData.name} Says... </h2>
+                                            <h2 class="Name" onclick="window.localStorage.setItem('p', ${childData.id}); window.location.href='./fullFormVeiw.html'">${childData.name} Says... </h2>
                                             <h3 class="sho">${childData.postName}</h3>
                                             <iframe src="${childData.postImg}">
                                             <p>${childData.postContent}</p>
@@ -427,9 +427,9 @@
                 var childData = childSnapshot.val();
                 var post = document.createElement("li");
                 if (childData.postImg == "") {
-                    post.innerHTML = `<div class="post" onclick="window.localStorage.setItem('p', ${childData.id}); window.location.href='./fullFormVeiw.html'">
+                    post.innerHTML = `<div class="post" >
                                        
-                                       <h2 class="Name">${childData.name} Says... </h2>
+                                       <h2 class="Name" onclick="window.localStorage.setItem('p', ${childData.id}); window.location.href='./fullFormVeiw.html'">${childData.name} Says... </h2>
                                        <h3 class="sho">${childData.postName}</h3>
                                        <p>${childData.postContent}</p>
                                        <button class="upvote" onclick="window.localStorage.setItem('cp', ${childData.id})">&#8593;</button>
@@ -451,9 +451,9 @@
                 else {
 
 
-                    post.innerHTML = `<div class="post" onclick="window.localStorage.setItem('p', ${childData.id}); window.location.href='./fullFormVeiw.html'">
+                    post.innerHTML = `<div class="post">
                                        
-                                            <h2 class="Name">${childData.name} Says...</h2>
+                                            <h2 class="Name" onclick="window.localStorage.setItem('p', ${childData.id}); window.location.href='./fullFormVeiw.html'">${childData.name} Says...</h2>
                                             <h3 class="sho">${childData.postName}</h3>
                                             <iframe src="${childData.postImg}">
                                             <p>${childData.postContent}</p>
