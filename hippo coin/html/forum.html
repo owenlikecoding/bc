@@ -41,8 +41,11 @@
     <div id="sidebarright">
         <br><br>
          <button id="create" class="button-38">Create a post</button><br><br>
-         <a href="./home.html">Back to home</a>
-    </div>
+         <a href="./home.html">Back to home</a><br><br>
+         <div style="display: flex; width: 100%; align-items: center; justify-content: space-evenly;">
+         <input type="text" id="search" placeholder="search forums" style="height: 5vh;"><button id="f" class="button-38" style="margin-top: -1%;">search</button>
+        </div>
+        </div>
     <div id="cont">
     <ul id="posts">
         
@@ -292,7 +295,7 @@
     </style>
     <script type="module">
             // Import the functions you need from the SDKs you need
-            import { initializeApp } from "https://www.gstatic.com/firebasejs/9.12.1/firebase-app.js";
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.12.1/firebase-app.js";
         import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.12.1/firebase-analytics.js";
         import { getDatabase, set, ref, get, child, onValue, update } from "https://www.gstatic.com/firebasejs/9.12.1/firebase-database.js"
         // TODO: Add SDKs for Firebase products that you want to use
@@ -309,6 +312,7 @@
             appId: "1:942203765915:web:ce50f6f18a90216bce723e",
             measurementId: "G-5CD9ZFYH8K"
         };
+    
 
         // Initialize Firebase
         const app = initializeApp(firebaseConfig);
@@ -316,6 +320,12 @@
         const db = getDatabase(app);
         const dbref = ref(db);
         var create = document.getElementById("create");
+        // format date here to yyyy-mm-dd
+        var date = new Date();
+        var year = date.getFullYear();
+        var month = date.getMonth() + 1;
+        var day = date.getDate();
+        var date = year + "-" + month + "-" + day;
         create.onclick = function () {
             let postName = prompt("Enter a post name");
             let postContent = prompt("Enter the content of the post you want to create");
@@ -330,7 +340,9 @@
                     postContent: postContent,
                     votes: 0,
                     id: num,
-                    postImg: postImg
+                    postImg: postImg,
+                    date: date
+
                 });
                 set(ref(db, "users/" +  "number/"), {
                     num: num/1 - 1
@@ -364,7 +376,7 @@
                                             <button class="downvote" onclick="window.localStorage.setItem('cp', ${childData.id})">&#8595;</button><br>
                                             <button class="comment" onclick="window.localStorage.setItem('cp', ${childData.id})">comment💬</button><br>
                                             <button class="vcomment" onclick="window.localStorage.setItem('cp', ${childData.id})">View Comments💬</button>
-
+                                            <p class="date" style="font: xx-small;">posted on: ${childData.date}</p>
                                    
                                    
                                
@@ -389,7 +401,8 @@
                                             <button class="downvote" onclick="window.localStorage.setItem('cp', ${childData.id})">&#8595;</button><br>
                                             <button class="comment" onclick="window.localStorage.setItem('cp', ${childData.id})">comment 💬</button><br>
                                             <button class="vcomment" onclick="window.localStorage.setItem('cp', ${childData.id})">View Comments💬</button>
-                                    
+                                            <p class="date" style="font: xx-small;">posted on: ${childData.date}</p>
+
                                     </div>
                                     
                                    
@@ -417,6 +430,7 @@
                                             <button class="downvote" onclick="window.localStorage.setItem('cp', ${childData.id})">&#8595;</button><br>
                                             <button class="comment" onclick="window.localStorage.setItem('cp', ${childData.id})">comment 💬</button><br>
                                             <button class="vcomment" onclick="window.localStorage.setItem('cp', ${childData.id})">View Comments💬</button>
+                                            <p class="date" style="font: xx-small;">posted on: ${childData.date}</p>
 
                                    
                                
@@ -441,6 +455,7 @@
                                             <button class="downvote" onclick="window.localStorage.setItem('cp', ${childData.id})">&#8595;</button><br>
                                             <button class="comment" onclick="window.localStorage.setItem('cp', ${childData.id})">Comment💬</button><br>
                                             <button class="vcomment" onclick="window.localStorage.setItem('cp', ${childData.id})">View Comments💬</button>
+                                            <p class="date" style="font: xx-small;">posted on: ${childData.date}</p>
 
 
                                         
@@ -475,7 +490,7 @@
                 get(child(dbref, "users/" + "number")).then(function(snapshot) {
                     let num = snapshot.val().num;
                     update(ref(db, "users/" + "number"), {
-                        number: num + 1
+                        number: num/1 + 1
                     });
                     update(ref(db, "posts/" + window.localStorage.getItem("cp") + "/" + "comments/" + num), {
                     content: content,
@@ -502,7 +517,13 @@
                 var topbar = document.getElementById("topbar").style.display = "flex"
             }
         }
-        // works
+        // search
+        var search = document.getElementById("search");
+        var k = document.getElementById("f");
+        k.onclick = function() {
+            window.localStorage.setItem("search", search.value);
+            window.location.href = "./post.html";
+        }
         
        
     </script>
