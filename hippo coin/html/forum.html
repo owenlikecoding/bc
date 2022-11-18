@@ -40,30 +40,32 @@
     </div>
     <div id="sidebarright">
         <br><br>
-         <button id="create" class="button-38">Create a post</button><br><br>
-         <a href="./home.html">Back to home</a><br><br>
-         <div style="display: flex; width: 100%; align-items: center; justify-content: space-evenly;">
-         <input type="text" id="search" placeholder="search forums" style="height: 5vh;"><button id="f" class="button-38" style="margin-top: -1%;">search</button>
+        <button id="create" class="button-38">Create a post</button><br><br>
+        <a href="./home.html">Back to home</a><br><br>
+        <div style="display: flex; width: 100%; align-items: center; justify-content: space-evenly;">
+            <input type="text" id="search" placeholder="search forums" style="height: 5vh;"><button id="f"
+                class="button-38" style="margin-top: -1%;">search</button>
         </div>
-        </div>
+    </div>
     <div id="cont">
-    <ul id="posts">
-        
-    </ul>
+        <ul id="posts">
+
+        </ul>
     </div>
     <style>
         * {
             margin: 0;
         }
+
         #sidebarright {
             height: 100%;
             width: 20%;
             background-color: rgb(46, 46, 203);
             margin-left: 80%;
             text-align: center;
-           
-        } 
-       
+
+        }
+
         a {
             text-decoration: none;
             color: white;
@@ -82,7 +84,7 @@
             display: none;
             box-shadow: rgba(0, 0, 0, 0.25) 0px 54px 55px, rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px, rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px;
         }
-        
+
 
         #data {
             width: 50%;
@@ -200,7 +202,7 @@
             height: 100vh;
             color: white;
             font-family: mainfont;
-            
+
         }
 
         h2 {
@@ -254,6 +256,7 @@
         .button-38:focus-visible {
             box-shadow: none;
         }
+
         .post {
             width: 80%;
             text-align: center;
@@ -267,7 +270,7 @@
             border: wheat 5px solid;
             overflow: scroll;
             line-break: normal;
-            
+
         }
 
         ul {
@@ -278,23 +281,26 @@
             margin-top: -50%;
             height: 100vh;
         }
-    
-    .upvote, .downvote {
-        font-size: x-large;
-        border: none;
-        background: none;
-        cursor: pointer;
-    }
-    .upvote:hover, .downvote:hover {
-        border: rgb(208, 23, 23) 1px solid;
-    }
+
+        .upvote,
+        .downvote {
+            font-size: x-large;
+            border: none;
+            background: none;
+            cursor: pointer;
+        }
+
+        .upvote:hover,
+        .downvote:hover {
+            border: rgb(208, 23, 23) 1px solid;
+        }
     </style>
 
     <style>
-        
+
     </style>
     <script type="module">
-            // Import the functions you need from the SDKs you need
+        // Import the functions you need from the SDKs you need
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.12.1/firebase-app.js";
         import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.12.1/firebase-analytics.js";
         import { getDatabase, set, ref, get, child, onValue, update } from "https://www.gstatic.com/firebasejs/9.12.1/firebase-database.js"
@@ -312,7 +318,7 @@
             appId: "1:942203765915:web:ce50f6f18a90216bce723e",
             measurementId: "G-5CD9ZFYH8K"
         };
-    
+
 
         // Initialize Firebase
         const app = initializeApp(firebaseConfig);
@@ -330,8 +336,8 @@
             let postName = prompt("Enter a post name");
             let postContent = prompt("Enter the content of the post you want to create");
             let postImg = prompt("Enter an image or video url (or dont)");
-            get(child(dbref, "users/" +  "number/")).then(function (snapshot) {
-              
+            get(child(dbref, "users/" + "number/")).then(function (snapshot) {
+
                 var num = snapshot.val().num;
 
                 set(ref(db, "posts/" + num), {
@@ -344,15 +350,15 @@
                     date: date
 
                 });
-                set(ref(db, "users/" +  "number/"), {
-                    num: num/1 - 1
+                set(ref(db, "users/" + "number/"), {
+                    num: num / 1 - 1
                 });
-            
+
             });
-           
+
         }
-      
-        
+
+
 
 
 
@@ -361,11 +367,11 @@
         get(postRef, (snapshot) => {
             posts.innerHTML = "";
             snapshot.forEach(function (childSnapshot) {
-            var childKey = childSnapshot.key;
+                var childKey = childSnapshot.key;
                 var childData = childSnapshot.val();
                 var post = document.createElement("li");
-                if(childData.postImg == "")  {
-                    post.innerHTML = `<div class="post">
+                if (childData.postImg == "") {
+                    post.innerHTML = `<div class="post" onclick="window.localStorage.setItem('p', ${childData.id}); window.location.href='./fullFormVeiw.html'">
                                        
                                        <h2 class="Name">${childData.name} Says... </h2>
                                        <h3 class="sho">${childData.postName}</h3>
@@ -384,13 +390,13 @@
                                
                               
                                `
-                               posts.appendChild(post);
+                    posts.appendChild(post);
 
                 }
                 else {
 
-                
-                post.innerHTML = `<div class="post">
+
+                    post.innerHTML = `<div class="post" onclick="window.localStorage.setItem('p', ${childData.id}); window.location.href='./fullFormVeiw.html'">
                                        
                                             <h2 class="Name">${childData.name} Says... </h2>
                                             <h3 class="sho">${childData.postName}</h3>
@@ -407,20 +413,21 @@
                                     
                                    
                                     `
-                posts.appendChild(post);
-                                }});
+                    posts.appendChild(post);
+                }
+            });
         });
 
-        
+
         onValue(postRef, (snapshot) => {
-            
+
             posts.innerHTML = "";
             snapshot.forEach(function (childSnapshot) {
-            var childKey = childSnapshot.key;
+                var childKey = childSnapshot.key;
                 var childData = childSnapshot.val();
                 var post = document.createElement("li");
-                if(childData.postImg == "")  {
-                    post.innerHTML = `<div class="post">
+                if (childData.postImg == "") {
+                    post.innerHTML = `<div class="post" onclick="window.localStorage.setItem('p', ${childData.id}); window.location.href='./fullFormVeiw.html'">
                                        
                                        <h2 class="Name">${childData.name} Says... </h2>
                                        <h3 class="sho">${childData.postName}</h3>
@@ -438,13 +445,13 @@
                                
                               
                                `
-                               posts.appendChild(post);
+                    posts.appendChild(post);
 
                 }
                 else {
 
-                
-                post.innerHTML = `<div class="post">
+
+                    post.innerHTML = `<div class="post" onclick="window.localStorage.setItem('p', ${childData.id}); window.location.href='./fullFormVeiw.html'">
                                        
                                             <h2 class="Name">${childData.name} Says...</h2>
                                             <h3 class="sho">${childData.postName}</h3>
@@ -464,54 +471,55 @@
                                     
                                    
                                     `
-                posts.appendChild(post);
-                                }
-                                });
-                                $(".upvote").click(function() {
-                get(child(dbref, "posts/" + window.localStorage.getItem("cp"))).then(function(snapshot) {
+                    posts.appendChild(post);
+
+                }
+            });
+            $(".upvote").click(function () {
+                get(child(dbref, "posts/" + window.localStorage.getItem("cp"))).then(function (snapshot) {
                     update(ref(db, "posts/" + window.localStorage.getItem("cp")), {
-                        votes: snapshot.val().votes/1 + 1
+                        votes: snapshot.val().votes / 1 + 1
                     });
                 })
-                
+
             });
-            $(".downvote").click(function() {
-                get(child(dbref, "posts/" + window.localStorage.getItem("cp"))).then(function(snapshot) {
+
+            $(".downvote").click(function () {
+                get(child(dbref, "posts/" + window.localStorage.getItem("cp"))).then(function (snapshot) {
                     update(ref(db, "posts/" + window.localStorage.getItem("cp")), {
-                        votes: snapshot.val().votes/1 - 1
+                        votes: snapshot.val().votes / 1 - 1
                     });
                 })
-                
+
             });
-            $(".comment").click(function() {
+            $(".comment").click(function () {
                 // make a random number for the comment id
                 let content = prompt("What do you want to say?");
-               // make a random number beewteen 1 and 100000
-                get(child(dbref, "users/" + "number")).then(function(snapshot) {
+                // make a random number beewteen 1 and 100000
+                get(child(dbref, "users/" + "number")).then(function (snapshot) {
                     let num = snapshot.val().num;
                     update(ref(db, "users/" + "number"), {
-                        number: num/1 + 1
+                        number: num / 1 + 1
                     });
                     update(ref(db, "posts/" + window.localStorage.getItem("cp") + "/" + "comments/" + num), {
-                    content: content,
-                    id: num, 
-                    username: window.localStorage.getItem("username")
-               })
+                        content: content,
+                        id: num,
+                        username: window.localStorage.getItem("username")
+                    })
                 })
-               
-              
+
+
             });
-            $(".vcomment").click(function() {
+            $(".vcomment").click(function () {
                 window.location.href = "comments.html";
             });
-                 
-            });
-      
-       
-          
+        });
 
-       
-        document.onkeydown = function(e) {
+
+
+
+
+        document.onkeydown = function (e) {
             if (e.keyCode === 87) {
                 var sidenav = document.getElementById("sidenav").style.display = "block";;
                 var topbar = document.getElementById("topbar").style.display = "flex"
@@ -520,12 +528,12 @@
         // search
         var search = document.getElementById("search");
         var k = document.getElementById("f");
-        k.onclick = function() {
+        k.onclick = function () {
             window.localStorage.setItem("search", search.value);
             window.location.href = "./post.html";
         }
-        
-       
+
+
     </script>
 </body>
 

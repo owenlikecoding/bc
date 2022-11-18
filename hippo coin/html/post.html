@@ -44,7 +44,7 @@
             if(childData.postName == search) {
                 // if the post name matches the search term, add it to the results list
                 const li = document.createElement("li");
-                li.innerHTML = `<div class="post">
+                li.innerHTML = `<div class="post" onclick="window.localStorage.setItem('p', ${childData.id}); window.location.href='./fullFormVeiw.html'">
                 <h3>${childData.postName}</h3>
                 <p>${childData.postContent}</p>
                 <p>Posted by ${childData.name}</p>

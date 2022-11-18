@@ -1,12 +1,171 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Post</title>
 </head>
+
 <body>
+    <div id="postData">
+        <h1 id="au"></h1>
+        <h2 id="postName"></h2>
+        <img src="https://i.imgur.com/gqhSXOp_d.webp?maxwidth=520&shape=thumb&fidelity=high" alt="" id="postImg" width="50%">
+        <p id="postContent"></p>
+        <p id="date"></p>
+        <h2>Comments:</h2>
+        <ul id="comments">
     
+        </ul>
+    <div id="ma">
+        <input type="text" id="comment" placeholder="write a comment"><button id="sub">Submit</button>
+     </div>
+    </div>
+   
+
+    <script type="module">
+        // Import the functions you need from the SDKs you need
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.12.1/firebase-app.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.12.1/firebase-analytics.js";
+        import { getDatabase, set, ref, get, child, onValue, update } from "https://www.gstatic.com/firebasejs/9.12.1/firebase-database.js"
+        // TODO: Add SDKs for Firebase products that you want to use
+        // https://firebase.google.com/docs/web/setup#available-libraries
+
+        // Your web app's Firebase configuration
+        // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+        const firebaseConfig = {
+            apiKey: "AIzaSyBlgCt1yJFfwKguVfymD5s1uB98Y3mcL2U",
+            authDomain: "burt-coin.firebaseapp.com",
+            projectId: "burt-coin",
+            storageBucket: "burt-coin.appspot.com",
+            messagingSenderId: "942203765915",
+            appId: "1:942203765915:web:ce50f6f18a90216bce723e",
+            measurementId: "G-5CD9ZFYH8K"
+        };
+
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const analytics = getAnalytics(app);
+        const db = getDatabase(app);
+        const dbref = ref(db);
+        var p = window.localStorage.getItem("p");
+        // doms vars
+        var postName = document.getElementById("postName");
+        var postContent = document.getElementById("postContent");
+        var date = document.getElementById("date");
+        var au = document.getElementById("au");
+        var comments = document.getElementById("comments");
+        var comment = document.getElementById("comment");
+        var sub = document.getElementById("sub");
+        var postImg = document.getElementById("postImg");
+        get(child(dbref, "posts/" + p)).then((snapshot) => {
+            if (snapshot.exists()) {
+                postName.innerHTML = snapshot.val().postName;
+                postContent.innerHTML = snapshot.val().postContent;
+                date.innerHTML = snapshot.val().date;
+                au.innerHTML = snapshot.val().name + " says....";
+                postImg.src = snapshot.val().postImg;
+            } else {
+                console.log("No data available");
+            }
+        }).catch((error) => {
+            console.error(error);
+        });
+        // get comments
+        onValue(child(dbref, "posts/" + p + "/" + "comments/"), (snapshot) => {
+            const data = snapshot.val();
+            comments.innerHTML = "";
+            for (const key in data) {
+                comments.innerHTML += "<li>" + data[key].comment + "</li>";
+            }
+        });
+        // submit comment
+        get(child(dbref, "users/" + "number")).then((snapshot) => {
+            if (snapshot.exists()) {
+                var n = snapshot.val().num;
+                sub.addEventListener("click", () => {
+                    var c = comment.value;
+                    update(child(dbref, "posts/" + p + "/" + "comments/" + n), {
+                        comment: c
+                    });
+                    comment.value = "";
+                    update(ref(db, "users/" + "number"), {
+                        num: n - 1
+                    });
+                    window.location.reload();
+
+
+                });
+
+            } else {
+                console.log("No data available");
+            }
+        }).catch((error) => {
+            console.error(error);
+        });
+
+
+
+    </script>
+    <script src="./change.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        @font-face {
+            font-family: "Burbank";
+            src: url(../fonts/JetBrainsMono-Regular.ttf);
+        }
+
+        @font-face {
+            font-family: "mainfont";
+            src: url(../fonts/uni-sans.heavy-caps.otf);
+        }
+        #ma {
+            margin-bottom: 5%;
+        }
+
+        body {
+            background-color: #161515;
+            color: white;
+        }
+
+        #postData {
+            font-family: mainfont;
+            background-color: rgb(255, 255, 255);
+            border: 5px solid wheat;
+            color: black;
+            text-align: center;
+            width: 50%;
+            margin-left: 25%;
+            margin-top: 1%;
+        }
+        input {
+            width: 50%;
+            height: 3%;
+            border: 2px solid rgb(0, 0, 0);
+            border-radius: 5px;
+            font-family: mainfont;
+            font-size: .9rem;
+            padding: 1%;
+        }
+        button {
+            width: 10%;
+            height: 3%;
+            border: 2px solid rgb(0, 0, 0);
+            border-radius: 5px;
+            font-family: mainfont;
+            font-size: .9rem;
+            padding: 1%;
+            background-color: rgb(255, 255, 255);
+            color: black;
+        }
+    </style>
 </body>
+
 </html>
