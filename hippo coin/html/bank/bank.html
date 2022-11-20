@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -7,22 +8,31 @@
     <title>Bank</title>
     <link rel="stylesheet" href="../main.css">
 </head>
+
 <body>
-   <div class="data">
-        <h2 id="bankName"></h2>
-        <h3 id="bankDesc"></h3>
-        <h3 id="bankBal"></h3>
-        <button id="ga">Get account with bank</button>
-        <button id="da">Deposit</button>
-        <button id="wa">Withdraw</button>
-        <button id="ta">Transact</button>
-        <button id="stim">Get stimulas check</button>
+    <div id="top">
+        <h1 id="bankN"></h1>
+        <a href="../home.html">Home</a><a href="../nav.html">Navigation</a>
+    </div>
+    <div class="data">
+        <div id="bankData">
+            <h2 id="bankName"></h2>
+            <h3 id="bankDesc"></h3>
+            <h3 id="bankBal"></h3>
+        </div>
+        <div id="actions">
+            <button id="ga" class="">Get account with bank</button>
+            <button id="da">Deposit</button>
+            <button id="wa">Withdraw</button>
+            <button id="ta">Transact</button>
+            <button id="stim">Get stimulas check</button>
+        </div>
         <div class="userData">
             <h2 id="accountName"></h2>
             <h3 id="accountBalance"></h3>
         </div>
-   </div>
- 
+    </div>
+
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.12.1/firebase-app.js";
         import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.12.1/firebase-analytics.js";
@@ -48,13 +58,15 @@
         const db = getDatabase(app);
         const dbref = ref(db)
         var bankName = localStorage.getItem("bank")
-        get(child(dbref, "banks/" +  bankName)).then((snapshot) => {
+        var bankN = document.getElementById("bankN")
+
+        get(child(dbref, "banks/" + bankName)).then((snapshot) => {
             if (snapshot.exists()) {
                 console.log(snapshot.val());
                 document.getElementById("bankName").innerHTML = "bank name: " + snapshot.val().name;
                 document.getElementById("bankDesc").innerHTML = "bank owner: " + snapshot.val().owner;
                 document.getElementById("bankBal").innerHTML = "bank balance: " + snapshot.val().balance;
-
+                bankN.innerHTML = snapshot.val().name + " bank";
 
             }
             else {
@@ -67,6 +79,7 @@
         var wa = document.getElementById("wa");
         var ta = document.getElementById("ta");
         var stim = document.getElementById("stim");
+
         // event listeners
         ga.addEventListener("click", getAccount);
         da.addEventListener("click", deposit);
@@ -86,139 +99,142 @@
                     console.log("No data available");
                     let password = prompt("enter a password for your account");
                     window.localStorage.setItem("bankAccount", user)
-                    set(child(dbref, "banks/"+ bank + "/" + "users/" + user ), {
+                    set(child(dbref, "banks/" + bank + "/" + "users/" + user), {
                         balance: 0,
                         username: user,
                         password: password
                     });
-                    alert("account created")
+                    alert("account created");
+                    window.location.reload();
+                    
                 }
+
             });
         }
         function deposit() {
-            if(bankAccount == null) {
+            if (bankAccount == null) {
                 alert("you dont have an account with this bank")
             }
             else {
-           var user = localStorage.getItem("username");
-           var bank = localStorage.getItem("bank");
-           var balance = window.localStorage.getItem("balance");
-           var amount = prompt("enter amount to deposit");
-           if(amount > balance) {
-            alert("you dont have enough money to deposit");
-           }
-           else {
-            var newBalance = balance - amount;
-            window.localStorage.setItem("balance", newBalance);
-            update(child(dbref, "users/" + user), {
-                balance: newBalance
-            });
-            get(child(dbref, "banks/" + bank + "/" + "users/" + user)).then((snapshot) => {
-                if (snapshot.exists()) {
-                    console.log(snapshot.val());
-                    var bankBalance = snapshot.val().balance;
-                    var newBankBalance = bankBalance/1 + amount/1;
-                    update(child(dbref, "banks/" + bank + "/" + "users/" + user), {
-                        balance: newBankBalance
-                    });
-                    
+                var user = localStorage.getItem("username");
+                var bank = localStorage.getItem("bank");
+                var balance = window.localStorage.getItem("balance");
+                var amount = prompt("enter amount to deposit");
+                if (amount > balance) {
+                    alert("you dont have enough money to deposit");
                 }
                 else {
-                    console.log("No data available");
+                    var newBalance = balance - amount;
+                    window.localStorage.setItem("balance", newBalance);
+                    update(child(dbref, "users/" + user), {
+                        balance: newBalance
+                    });
+                    get(child(dbref, "banks/" + bank + "/" + "users/" + user)).then((snapshot) => {
+                        if (snapshot.exists()) {
+                            console.log(snapshot.val());
+                            var bankBalance = snapshot.val().balance;
+                            var newBankBalance = bankBalance / 1 + amount / 1;
+                            update(child(dbref, "banks/" + bank + "/" + "users/" + user), {
+                                balance: newBankBalance
+                            });
+
+                        }
+                        else {
+                            console.log("No data available");
+                        }
+                    });
                 }
-            });
-           }
-        }
+            }
         }
         function withdraw() {
             var bank = localStorage.getItem("bank");
             var bankAccount = window.localStorage.getItem("bankAccount");
-            if(bankAccount == null) {
+            if (bankAccount == null) {
                 alert("you dont have an account with this bank")
             }
             else {
 
-            var user = localStorage.getItem("username");
-            var amount = prompt("enter amount to withdraw");
-            get(child(dbref, "banks/" + bank + "/" + "users/" + user)).then((snapshot) => {
-                if (snapshot.exists()) {
-                    console.log(snapshot.val());
-                    var bankBalance = snapshot.val().balance;
-                    if(amount > bankBalance) {
-                        alert("you dont have enough money to withdraw");
+                var user = localStorage.getItem("username");
+                var amount = prompt("enter amount to withdraw");
+                get(child(dbref, "banks/" + bank + "/" + "users/" + user)).then((snapshot) => {
+                    if (snapshot.exists()) {
+                        console.log(snapshot.val());
+                        var bankBalance = snapshot.val().balance;
+                        if (amount > bankBalance) {
+                            alert("you dont have enough money to withdraw");
+                        }
+                        else {
+                            var newBankBalance = bankBalance - amount;
+                            update(child(dbref, "banks/" + bank + "/" + "users/" + user), {
+                                balance: newBankBalance
+                            });
+                            get(child(dbref, "users/" + user)).then((snapshot) => {
+                                if (snapshot.exists()) {
+                                    console.log(snapshot.val());
+                                    var userBalance = snapshot.val().balance;
+                                    var newUserBalance = userBalance / 1 + amount / 1;
+                                    update(child(dbref, "users/" + user), {
+                                        balance: newUserBalance
+                                    });
+                                    window.localStorage.setItem("balance", newUserBalance);
+                                }
+                                else {
+                                    console.log("No data available");
+                                }
+                            });
+                        }
                     }
                     else {
-                        var newBankBalance = bankBalance - amount;
-                        update(child(dbref, "banks/" + bank + "/" + "users/" + user), {
-                            balance: newBankBalance
-                        });
-                        get(child(dbref, "users/" + user)).then((snapshot) => {
-                            if (snapshot.exists()) {
-                                console.log(snapshot.val());
-                                var userBalance = snapshot.val().balance;
-                                var newUserBalance = userBalance/1 + amount/1;
-                                update(child(dbref, "users/" + user), {
-                                    balance: newUserBalance
-                                });
-                                window.localStorage.setItem("balance", newUserBalance);
-                            }
-                            else {
-                                console.log("No data available");
-                            }
-                        });
+                        console.log("No data available");
                     }
-                }
-                else {
-                    console.log("No data available");
-                }
-            });
-        }
+                });
+            }
         }
         function transact() {
             var bank = localStorage.getItem("bank");
             var bankAccount = window.localStorage.getItem("bankAccount");
-            if(bankAccount == null) {
+            if (bankAccount == null) {
                 alert("you dont have an account with this bank")
             }
             else {
-            var user = localStorage.getItem("username");
-            var amount = prompt("enter amount to transfer");
-            var reciever = prompt("enter reciever's username");
-            get(child(dbref, "banks/" + bank + "/" + "users/" + user)).then((snapshot) => {
-                if (snapshot.exists()) {
-                    console.log(snapshot.val());
-                    var bankBalance = snapshot.val().balance;
-                    if(amount > bankBalance) {
-                        alert("you dont have enough money to transfer");
+                var user = localStorage.getItem("username");
+                var amount = prompt("enter amount to transfer");
+                var reciever = prompt("enter reciever's username");
+                get(child(dbref, "banks/" + bank + "/" + "users/" + user)).then((snapshot) => {
+                    if (snapshot.exists()) {
+                        console.log(snapshot.val());
+                        var bankBalance = snapshot.val().balance;
+                        if (amount > bankBalance) {
+                            alert("you dont have enough money to transfer");
+                        }
+                        else {
+                            var newBankBalance = bankBalance - amount;
+                            update(child(dbref, "banks/" + bank + "/" + "users/" + user), {
+                                balance: newBankBalance
+                            });
+                            get(child(dbref, "users/" + reciever)).then((snapshot) => {
+                                if (snapshot.exists()) {
+                                    console.log(snapshot.val());
+                                    var recieverBalance = snapshot.val().balance;
+                                    var newRecieverBalance = recieverBalance / 1 + amount / 1;
+                                    update(child(dbref, "users/" + reciever), {
+                                        balance: newRecieverBalance
+                                    });
+                                }
+                                else {
+                                    console.log("No data available");
+                                }
+                            });
+                        }
                     }
                     else {
-                        var newBankBalance = bankBalance - amount;
-                        update(child(dbref, "banks/" + bank + "/" + "users/" + user), {
-                            balance: newBankBalance
-                        });
-                        get(child(dbref, "users/" + reciever)).then((snapshot) => {
-                            if (snapshot.exists()) {
-                                console.log(snapshot.val());
-                                var recieverBalance = snapshot.val().balance;
-                                var newRecieverBalance = recieverBalance/1 + amount/1;
-                                update(child(dbref, "users/" + reciever), {
-                                    balance: newRecieverBalance
-                                });
-                            }
-                            else {
-                                console.log("No data available");
-                            }
-                        });
+                        console.log("No data available");
                     }
-                }
-                else {
-                    console.log("No data available");
-                }
-            });
-        }
+                });
+            }
         }
         var bankAccount = window.localStorage.getItem("bankAccount");
-        if(bankAccount !== null) {
+        if (bankAccount !== null) {
             var user = localStorage.getItem("username");
             var bank = localStorage.getItem("bank");
             get(child(dbref, "banks/" + bank + "/" + "users/" + user)).then((snapshot) => {
@@ -242,28 +258,118 @@
             var user = localStorage.getItem("username");
             var balance = window.localStorage.getItem("balance");
             let need = prompt("how much money do you need?");
-            if(need > 1000) {
+            if (need > 1000) {
                 alert("you can only get 1000 dollars");
             }
             else {
-                get(child(dbref, "banks/" + window.localStorage.getItem("bank"))).then(function(snapshot) {
+                get(child(dbref, "banks/" + window.localStorage.getItem("bank"))).then(function (snapshot) {
 
-                var newBalance = balance/1 + need/1;
-                var newStimulas = snapshot.val().balance - need;
-                window.localStorage.setItem("balance", newBalance);
-                update(child(dbref, "banks/" + window.localStorage.getItem("bank") + "/" + "users/" + user), {
-                    balance: newBalance
-                });
-                update(ref(db, "banks/" + localStorage.getItem("bank")), {
-                    balance: newStimulas
-                });
-                alert("you got " + need + " dollars");
+                    var newBalance = balance / 1 + need / 1;
+                    var newStimulas = snapshot.val().balance - need;
+                    window.localStorage.setItem("balance", newBalance);
+                    update(child(dbref, "banks/" + window.localStorage.getItem("bank") + "/" + "users/" + user), {
+                        balance: newBalance
+                    });
+                    update(ref(db, "banks/" + localStorage.getItem("bank")), {
+                        balance: newStimulas
+                    });
+                    alert("you got " + need + " dollars");
 
-            });
+                });
             }
         }
 
     </script>
+    <style>
+        #top {
+            background-color: #000000;
+            color: #ffffff;
+            padding: 10px;
+            text-align: center;
+        }
+
+        #top a {
+            color: #ffffff;
+            text-decoration: none;
+
+        }
+
+        #top a:last-child {
+            margin-left: .5%;
+        }
+
+        .data {
+            background-color: rgb(16, 15, 15);
+            text-shadow: 2px 2px 2px #000000;
+            color: #ffffff;
+            padding: 10px;
+            text-align: center;
+            width: 50%;
+            border: #000000 2px solid;
+            box-shadow: 2px 2px 2px 1px rgba(0, 0, 0, 0.2);
+            margin-top: 5%;
+            margin-left: 25%;
+        }
+
+        /* CSS */
+        .button-4 {
+            appearance: none;
+            background-color: #FAFBFC;
+            border: 1px solid rgba(27, 31, 35, 0.15);
+            border-radius: 6px;
+            box-shadow: rgba(27, 31, 35, 0.04) 0 1px 0, rgba(255, 255, 255, 0.25) 0 1px 0 inset;
+            box-sizing: border-box;
+            color: #24292E;
+            cursor: pointer;
+            display: inline-block;
+            font-family: -apple-system, system-ui, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
+            font-size: 14px;
+            font-weight: 500;
+            line-height: 20px;
+            list-style: none;
+            padding: 6px 16px;
+            position: relative;
+            transition: background-color 0.2s cubic-bezier(0.3, 0, 0.5, 1);
+            user-select: none;
+            -webkit-user-select: none;
+            touch-action: manipulation;
+            vertical-align: middle;
+            white-space: nowrap;
+            word-wrap: break-word;
+        }
+
+        .button-4:hover {
+            background-color: #F3F4F6;
+            text-decoration: none;
+            transition-duration: 0.1s;
+        }
+
+        .button-4:disabled {
+            background-color: #FAFBFC;
+            border-color: rgba(27, 31, 35, 0.15);
+            color: #959DA5;
+            cursor: default;
+        }
+
+        .button-4:active {
+            background-color: #EDEFF2;
+            box-shadow: rgba(225, 228, 232, 0.2) 0 1px 0 inset;
+            transition: none 0s;
+        }
+
+        .button-4:focus {
+            outline: 1px transparent;
+        }
+
+        .button-4:before {
+            display: none;
+        }
+
+        .button-4:-webkit-details-marker {
+            display: none;
+        }
+    </style>
 
 </body>
+
 </html>
