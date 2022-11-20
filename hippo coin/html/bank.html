@@ -1,16 +1,218 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Banking</title>
     <link rel="stylesheet" href="./main.css">
+    <style>
+        body {
+            height: auto;
+            overflow: scroll;
+        }
+    </style>
 </head>
+
 <body>
-    <div class="top">
-        <h2>Banking</h2>
+    <div id="top">
+        <h1>Banking</h1>
     </div>
-    <a href="./bank/findAbank.html">Navigate to a bank</a><br>
+    <h2>Banks:</h2>
+    <ul id="banks"></ul>
+    <div id="currentAccount">
+        <h1>Current Account</h1>
+        <h2 id="accountName">Loading...</h2>
+        <p id="accountBalance">Loading...</p>
+        <p id="accountWith">Loading...</p><br>
+        <button id="nav" class="button-26">Navigate to you bank</button>
+    </div>
+    <footer style="display: none;">
+        <!-- back button -->
+        <a href="./nav.html">Nav</a><p><- you are witnessing a test feture, only 10% users see this </p>
+    </footer>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.12.1/firebase-app.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.12.1/firebase-analytics.js";
+        import { getDatabase, set, ref, get, child, onValue, update, remove } from "https://www.gstatic.com/firebasejs/9.12.1/firebase-database.js"
+        // TODO: Add SDKs for Firebase products that you want to use
+        // https://firebase.google.com/docs/web/setup#available-libraries
+
+        // Your web app's Firebase configuration
+        // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+        const firebaseConfig = {
+            apiKey: "AIzaSyBlgCt1yJFfwKguVfymD5s1uB98Y3mcL2U",
+            authDomain: "burt-coin.firebaseapp.com",
+            projectId: "burt-coin",
+            storageBucket: "burt-coin.appspot.com",
+            messagingSenderId: "942203765915",
+            appId: "1:942203765915:web:ce50f6f18a90216bce723e",
+            measurementId: "G-5CD9ZFYH8K"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const analytics = getAnalytics(app);
+        const db = getDatabase(app);
+        const dbref = ref(db);
+        get(child(dbref, "banks")).then((snapshot) => {
+            if (snapshot.exists()) {
+                console.log(snapshot.val());
+                let banks = snapshot.val();
+                let bankList = document.getElementById("banks");
+                for (let bank in banks) {
+                    let bankName = banks[bank].name;
+                    let bankDesc = banks[bank].desc;
+                    let bankId = banks[bank].id;
+                    var banlBalance = banks[bank].balance;
+                    let bankLi = document.createElement("li");
+                    bankLi.innerHTML = bankName + " - " + banlBalance + "bc";
+                    bankLi.addEventListener("click", () => {
+                        localStorage.setItem("bank", bankName);
+                        window.location.href = `./bank/bank.html`;
+                    });
+                    bankList.appendChild(bankLi);
+                }
+            } else {
+                console.log("No data available");
+            }
+        }).catch((error) => {
+            console.error(error);
+        });
+        var bank = localStorage.getItem("bank");
+        var accountName = document.getElementById("accountName");
+        var accountBalance = document.getElementById("accountBalance");
+        get(child(dbref, "banks/" + window.localStorage.getItem("bank") + "/" + "users/" + window.localStorage.getItem("username"))).then(function (snapshot) {
+            if (snapshot.exists()) {
+                console.log(snapshot.val());
+                accountName.innerHTML = "account name: " + snapshot.val().username;
+                accountBalance.innerHTML = "You have " + snapshot.val().balance + " bc";
+            } else {
+                accountName.innerHTML = "No account";
+                accountBalance.innerHTML = "N/A";
+
+                console.log("No data available");
+            }
+        }).catch(function (error) {
+            console.error(error);
+        });
+        var accountWith = document.getElementById("accountWith");
+        var nav = document.getElementById("nav");
+        get(child(dbref, "banks/" + window.localStorage.getItem("bank"))).then(function (snapshot) {
+            if (snapshot.exists()) {
+                console.log(snapshot.val());
+                accountWith.innerHTML = "You are with " + snapshot.val().name + " bank";
+                nav.onclick = () => {
+                    window.localStorage.setItem("bank", snapshot.val().name);
+                    window.location.href = `./bank/bank.html`;
+                }
+
+            } else {
+                accountWith.innerHTML = "N/A";
+                console.log("No data available");
+            }
+        }).catch(function (error) {
+            console.error(error);
+        });
+        // random number between 1 and 2
+        var random = Math.floor(Math.random() * 10) + 1;
+        if (random == 1) {
+            document.querySelector("footer").style.display = "block";
+        }
+    </script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+
+        }
+
+        #accountBalance,
+        #accountWith {
+            font-family: monofont;
+        }
+        /* CSS */
+        .button-26 {
+            appearance: button;
+            background-color: #1652F0;
+            border: 1px solid #1652F0;
+            border-radius: 4px;
+            box-sizing: border-box;
+            color: #FFFFFF;
+            cursor: pointer;
+            font-family: Graphik, -apple-system, system-ui, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
+            font-size: 14px;
+            line-height: 1.15;
+            overflow: visible;
+            padding: 12px 16px;
+            position: relative;
+            text-align: center;
+            text-transform: none;
+            transition: all 80ms ease-in-out;
+            user-select: none;
+            -webkit-user-select: none;
+            touch-action: manipulation;
+            width: fit-content;
+        }
+
+        .button-26:disabled {
+            opacity: .5;
+        }
+
+        .button-26:focus {
+            outline: 0;
+        }
+
+        .button-26:hover {
+            background-color: #0A46E4;
+            border-color: #0A46E4;
+        }
+
+        .button-26:active {
+            background-color: #0039D7;
+            border-color: #0039D7;
+        }
+        footer {
+            position: fixed;
+            left: 0;
+            bottom: 0;
+            width: 100%;
+            background-color: transparent;
+            color: white;
+            display: flex;
+            height: 2%;
+            justify-content: center;
+            align-items: center;
+        }
+        footer p {
+            margin-left: 1%;
+        }
+        #top {
+            display: flex;
+            justify-content: space-evenly;
+            align-items: center;
+            height: 7%;
+            text-shadow: 2px 2px 2px black;
+            background-color: rgb(31, 53, 177);
+        }
+
+        ul {
+            list-style-type: none;
+
+        }
+
+        li {
+            padding: 10px 10px;
+            margin: 10px 10px;
+            border: 1px solid black;
+            height: 100%;
+            background-color: rgb(19, 19, 19);
+
+
+        }
+    </style>
 </body>
+
 </html>
