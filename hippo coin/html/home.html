@@ -306,6 +306,7 @@
           window.location.href = "https://thebackroomsgames.com/the-backrooms/"
         });
         if(window.localStorage.getItem("lastStimulas" == null)){
+            var today = new Date();
             var date = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
             window.localStorage.setItem("lastStimulas", date);
         }
