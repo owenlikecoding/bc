@@ -255,11 +255,16 @@
         }
         // stimulas check
         function getStimulas() {
-            var user = localStorage.getItem("username");
-            var balance = window.localStorage.getItem("balance");
-            let need = prompt("how much money do you need?");
+            // only allow user to get stimulas once per 45 days
+            var lastStimulas = window.localStorage.getItem("lastStimulas");
+            var today = new Date();
+            var date = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
+            var need = prompt("how much do you need?");
             if (need > 1000) {
-                alert("you can only get 1000 dollars");
+             alert("you can only get 1000 dollars"); 
+            }
+            else if(today !== lastStimulas){
+                alert("You cant get a stimulas check yet");
             }
             else {
                 get(child(dbref, "banks/" + window.localStorage.getItem("bank"))).then(function (snapshot) {
@@ -277,7 +282,8 @@
 
                 });
             }
-        }
+            }
+           
 
     </script>
     <style>

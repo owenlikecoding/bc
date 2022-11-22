@@ -305,6 +305,12 @@
         sec.addEventListener("click", function () {
           window.location.href = "https://thebackroomsgames.com/the-backrooms/"
         });
+        if(window.localStorage.getItem("lastStimulas" == null)){
+            var date = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
+            window.localStorage.setItem("lastStimulas", date);
+        }
+            
+    
     </script>
         <script src="./change.js"></script>
 
