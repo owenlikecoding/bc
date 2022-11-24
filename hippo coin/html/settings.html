@@ -1,33 +1,51 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Setting</title>
 </head>
+
 <body>
-    <h1>settings</h1>
-    <a href="./home.html">Back to home</a>
-    <br><br>
+    <div id="top">
+        <h1>settings</h1>
+        <a href="./home.html">Back to home</a>
+    </div>
     <div id="settings">
-    <h2 style="font-family: monofont;">Change profile picture</h2><br>
-    <input type="text" id="profile" placeholder="enter a image url for profile picture">
-    <br>
-    <h2 style="font-family: monofont;">Change background color</h2><br>
-    <input type="color" id="color" placeholder="enter a color">
-    <br>
-    <h2 style="font-family: monofont;">Change text color</h2><br>
-    <input type="color" id="textColor" ><br>
-
-    <br>
-
-    <button class="button-38" id="but">Submit Changes</button><br>
-    <!-- reset to default button-->
-    <button class="button-38" id="reset">Reset to default</button>
+        <div id="proSettings">
+            <h1>Profile settings:</h1>
+            <h2 style="font-family: monofont;">Change profile picture</h2><br>
+            <input type="text" id="profile" placeholder="enter a image url for profile picture"><br>
+            <h2 style="font-family: monofont;">Change background color</h2>
+            <input type="color" id="color" placeholder="enter a color"><br>
+            <h2 style="font-family: monofont;">Change text color</h2>
+            <input type="color" id="textColor"><br><br>
+        </div>
+        <button class="button-38" id="but">Submit Changes</button>
+        <button class="button-38" id="reset">Reset to default</button>
+        <div id="themes">
+            <h1>Themes:</h1>
+            <p>(themes supported only by chome users on windows)</p>
+            <button class="button-38" onclick="window.localStorage.setItem('mode', 'china')">China 🇨🇳</button>
+            <button class="button-38" onclick="window.localStorage.setItem('mode', 'usa')">USA 🇺🇸</button>
+            <button class="button-38" onclick="window.localStorage.setItem('mode', 'russia')">Russia 🇷🇺</button>
+            <button class="button-38" onclick="window.localStorage.setItem('mode', 'japan')">Japan 🇯🇵</button>
+            <button class="button-38" onclick="window.localStorage.setItem('mode', 'india')">India 🇮🇳</button>
+            <button class="button-38" onclick="window.localStorage.setItem('mode', 'germany')">Germany 🇩🇪</button>
+            <button class="button-38" onclick="window.localStorage.setItem('mode', 'france')">France 🇫🇷</button>
+            <button class="button-38" onclick="window.localStorage.setItem('mode', 'italy')">Italy 🇮🇹</button>
+            <button class="button-38" onclick="window.localStorage.setItem('mode', 'uk')">UK 🇬🇧</button>
+            <button class="button-38" onclick="window.localStorage.setItem('mode', 'spain')">Spain 🇪🇸</button>
+            <button class="button-38" onclick="window.localStorage.setItem('mode', 'turkey')">Turkey 🇹🇷</button>
+            <button class="button-38" onclick="window.localStorage.setItem('mode', 'iran')">Iran 🇮🇷</button>
+        </div>
+        <!-- reset to default button-->
+        
     </div>
     <script type="module">
-        
+
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.12.1/firebase-app.js";
         import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.12.1/firebase-analytics.js";
         import { getDatabase, set, ref, get, child, update } from "https://www.gstatic.com/firebasejs/9.12.1/firebase-database.js"
@@ -53,26 +71,30 @@
         const dbref = ref(db);
         var profile = document.getElementById("profile");
         var but = document.getElementById("but");
-        but.onclick = function() {
+        but.onclick = function () {
             window.localStorage.setItem("propic", profile.value);
-            window.localStorage.setItem("textColor", document.getElementById("color").value);
-            window.localStorage.setItem("bgColor", document.getElementById("textColor").value);
+            window.localStorage.setItem("textColor", document.getElementById("textColor").value);
+            window.localStorage.setItem("bgColor", document.getElementById("color").value);
             update(ref(db, "users/" + window.localStorage.getItem("username")), {
                 propic: profile.value
             });
-            setTimeout(function() {
-                window.location.href = "./home.html";
+            setTimeout(function () {
+                window.location.reload();
             }, 500)
-          
-            
+
+
         }
         var reset = document.getElementById("reset");
-        reset.onclick = function() {
+        reset.onclick = function () {
             window.localStorage.setItem("bgColor", "#111827");
             window.localStorage.setItem("textColor", "#fff");
+            window.location.reload();
         }
+        get(child(dbref, "users/" + window.localStorage.getItem("username"))).then(function(snapshot) {
+            profile.value = snapshot.val().propic;
+        });
     </script>
-        <script src="./change.js"></script>
+    <script src="./change.js"></script>
 
     <style>
         * {
@@ -96,7 +118,10 @@
             align-items: center;
             box-shadow: rgba(0, 0, 0, 0.25) 0px 54px 55px, rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px, rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px;
         }
-
+        #settings {
+            border-left: 5px white solid;
+            border-bottom: 5px white solid;
+        }
         #data {
             width: 50%;
             height: 50%;
@@ -184,7 +209,7 @@
 
         @font-face {
             font-family: monofont;
-            src: url("../fonts/JetBrainsMono-ExtraBold.ttf");
+            src: url("../fonts/JetBrainsMono-regular.ttf");
         }
 
         @font-face {
@@ -220,10 +245,13 @@
             text-emphasis: bold;
         }
 
-
-        input {
+        #settings {
+            text-align: left;
+            margin-left: 5%;
+        }
+        #profile {
             background-color: rgb(30, 29, 29);
-            width: 80%;
+            width: 30%;
             height: 4vh;
             text-align: center;
             font-family: monofont;
@@ -266,7 +294,15 @@
         .button-38:focus-visible {
             box-shadow: none;
         }
+
+        #top {
+            background-color: rgb(0, 3, 197);
+            align-items: center;
+            text-align: center;
+            text-shadow: black 2px 2px 2px;
+        }
     </style>
-    
+
 </body>
+
 </html>
