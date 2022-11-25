@@ -11,7 +11,12 @@
         function load() {
             window.location.href = "https://owinsta.my.canva.site/burtcoin";
         }
-        load();
+        if(window.localStorage.getItem("username" !== null)) {
+            window.localStorage.href = "./hippo coin/html/home.html";
+        }
+        else {
+            load()
+        }
     </script>
 </body>
 </html>
