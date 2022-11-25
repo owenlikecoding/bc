@@ -37,10 +37,29 @@
             src: url("../fonts/uni-sans.heavy-caps.otf");
         }
         ul {
-            list-style: none;
             width: 100%;
-            margin-left: 10%;
+            list-style: none;
+            
         }
+        body {
+            font-family: mainfont;
+        }
+       li {
+        height: 5%;
+        padding-top: 1%;
+        padding-bottom: 1%;
+        background-image: linear-gradient(to right, #000000, #630b0b);
+        margin: 1%;
+        width: 80%;
+        display: flex;
+        justify-content: left;
+        align-items: center;
+        border-radius: 10px;
+        border: black 2px solid;
+       }
+       li p {
+        margin-left: 3%;
+       }
         .top {
             background-color: rgb(9, 28, 104);
             height: 7vh;
@@ -101,17 +120,22 @@
                 const users = snapshot.val();
                 const userKeys = Object.keys(users);
                 const userList = document.getElementById("UserList");
+                // random number 10000
+                const random = Math.floor(Math.random() * 10000);
                 userKeys.forEach((key) => {
                     const user = users[key];
                     const li = document.createElement("li");
-                    li.innerHTML = `<p onclick="window.localStorage.setItem('cu', '${user.number}')" >${user.username}</p> - ${user.social}`;
+                    li.innerHTML = `<p onclick="window.localStorage.setItem('dmid', random)" >${user.username}</p> - ${user.social}`;
                     userList.appendChild(li);
                 })
             } else {
                 console.log("No data available");
             }
             $("li").click(function() {
-            window.location.href = "./dmchat.html";
+            window.location.href = "./dmd.html";
+            set(ref(db, window.localStorage.getItem("dmid")), {
+                owned: window.localStorage.getItem("username")
+            })
         })
         }).catch((error) => {
             console.error(error);
