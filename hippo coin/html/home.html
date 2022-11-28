@@ -80,7 +80,7 @@
             height: 100%;
             width: 20%;
             background-color: rgb(27, 30, 208);
-
+            position: fixed;
             box-shadow: rgba(0, 0, 0, 0.25) 0px 54px 55px, rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px, rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px;
             text-align: center;
         }
@@ -238,6 +238,7 @@
         .button-38:focus-visible {
             box-shadow: none;
         }
+
     </style>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
@@ -293,7 +294,7 @@
         menu.addEventListener("click", myFunction)
         function myFunction(x) {
             menu.classList.toggle("change");
-            $("#sidenav").toggle()
+            $("#sidenav").toggle();
         }
         var signOut = document.getElementById("signOut");
         signOut.addEventListener("click", function () {
