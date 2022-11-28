@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Get image url</title>
+</head>
+
+<body>
+    <h1>Get image url</h1>
+    <a href="./home.html">Back to home</a><br><br>
+    <input type="file" name="file" id="file"><br>
+    <button type="submit" name="submit">UPLOAD</button><br>
+    <p id="url1"></p>
+    <script type="module">
+        // Import the functions you need from the SDKs you need
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.12.1/firebase-app.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.12.1/firebase-analytics.js";
+        import { getDatabase, set, ref, get, child } from "https://www.gstatic.com/firebasejs/9.12.1/firebase-database.js";
+        import { getStorage, ref as sref, uploadBytesResumable, getDownloadURL } from "https://www.gstatic.com/firebasejs/9.12.1/firebase-storage.js";
+        // TODO: Add SDKs for Firebase products that you want to use
+        // https://firebase.google.com/docs/web/setup#available-libraries
+
+        // Your web app's Firebase configuration
+        // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+        const firebaseConfig = {
+            apiKey: "AIzaSyBlgCt1yJFfwKguVfymD5s1uB98Y3mcL2U",
+            authDomain: "burt-coin.firebaseapp.com",
+            projectId: "burt-coin",
+            storageBucket: "burt-coin.appspot.com",
+            messagingSenderId: "942203765915",
+            appId: "1:942203765915:web:ce50f6f18a90216bce723e",
+            measurementId: "G-5CD9ZFYH8K"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const analytics = getAnalytics(app);
+        const db = getDatabase(app);
+        const dbref = ref(db);
+        const file = document.getElementById("file");
+        const submit = document.querySelector("button");
+        const storageRef = sref(getStorage(app));
+        const url1 = document.getElementById("url1");
+        submit.addEventListener("click", () => {
+            var file = document.getElementById('file').files[0];
+            var storageRef = sref(getStorage(app), 'profile_pictures/' + file.name);
+            var uploadTask = uploadBytesResumable(storageRef, file);
+            uploadTask.on('state_changed', function(snapshot) {
+                var progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                console.log('Upload is ' + progress + '% done');
+                switch (snapshot.state) {
+                    case 'paused':
+                        console.log('Upload is paused');
+                        break;
+                    case 'running':
+                        url1.innerHTML = "Uploading...";
+                        console.log('Upload is running');
+                        break;
+                }
+            }, function(error) {
+                console.log(error);
+            }, function() {
+                getDownloadURL(uploadTask.snapshot.ref).then(function(downloadURL) {
+                    url1.innerHTML = "Image Url: " + downloadURL;
+                });
+            });
+        });
+
+    </script>
+</body>
+
+</html>
