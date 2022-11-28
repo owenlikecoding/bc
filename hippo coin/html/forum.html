@@ -371,7 +371,7 @@
                 var childData = childSnapshot.val();
                 var post = document.createElement("li");
                 if (childData.postImg == "") {
-                    post.innerHTML = `<div class="post" >
+                    post.innerHTML = `<div class="post" PID="${childData.id}">
                                        
                                        <h2 class="Name" onclick="window.localStorage.setItem('p', ${childData.id}); window.location.href='./fullFormVeiw.html'">${childData.name} Says... </h2>
                                        <h3 class="sho">${childData.postName}</h3>
@@ -396,7 +396,7 @@
                 else {
 
 
-                    post.innerHTML = `<div class="post" >
+                    post.innerHTML = `<div class="post" PID="${childData.id}">
                                        
                                             <h2 class="Name" onclick="window.localStorage.setItem('p', ${childData.id}); window.location.href='./fullFormVeiw.html'">${childData.name} Says... </h2>
                                             <h3 class="sho">${childData.postName}</h3>
@@ -427,7 +427,7 @@
                 var childData = childSnapshot.val();
                 var post = document.createElement("li");
                 if (childData.postImg == "") {
-                    post.innerHTML = `<div class="post" >
+                    post.innerHTML = `<div class="post" PID="${childData.id}">
                                        
                                        <h2 class="Name" onclick="window.localStorage.setItem('p', ${childData.id}); window.location.href='./fullFormVeiw.html'">${childData.name} Says... </h2>
                                        <h3 class="sho">${childData.postName}</h3>
@@ -451,7 +451,7 @@
                 else {
 
 
-                    post.innerHTML = `<div class="post">
+                    post.innerHTML = `<div class="post" PID="${childData.id}">
                                        
                                             <h2 class="Name" onclick="window.localStorage.setItem('p', ${childData.id}); window.location.href='./fullFormVeiw.html'">${childData.name} Says...</h2>
                                             <h3 class="sho">${childData.postName}</h3>
@@ -476,21 +476,38 @@
                 }
             });
             $(".upvote").click(function () {
-                get(child(dbref, "posts/" + window.localStorage.getItem("cp"))).then(function (snapshot) {
-                    update(ref(db, "posts/" + window.localStorage.getItem("cp")), {
-                        votes: snapshot.val().votes / 1 + 1
-                    });
-                })
+                if(window.localStorage.getItem("av") !== window.localStorage.getItem("cp") + "true"){
+                    get(child(dbref, "posts/" + window.localStorage.getItem("cp"))).then(function (snapshot) {
+                        update(ref(db, "posts/" + window.localStorage.getItem("cp")), {
+                            votes: snapshot.val().votes/1 - 1
+                        });
+                    })
+                    // disabale the button
+                    window.localStorage.setItem("av", window.localStorage.getItem("cp") + "true");
+                }
+                else{
+                    alert("You can only vote once per post");
+                }
+                // disabale the button
+                
 
             });
 
             $(".downvote").click(function () {
-                get(child(dbref, "posts/" + window.localStorage.getItem("cp"))).then(function (snapshot) {
-                    update(ref(db, "posts/" + window.localStorage.getItem("cp")), {
-                        votes: snapshot.val().votes / 1 - 1
-                    });
-                })
-
+                if(window.localStorage.getItem("av") !== window.localStorage.getItem("cp") + "true"){
+                    get(child(dbref, "posts/" + window.localStorage.getItem("cp"))).then(function (snapshot) {
+                        update(ref(db, "posts/" + window.localStorage.getItem("cp")), {
+                            votes: snapshot.val().votes/1 - 1
+                        });
+                    })
+                    // disabale the button
+                    window.localStorage.setItem("av", window.localStorage.getItem("cp") + "true");
+                }
+                else{
+                    alert("You can only vote once per post");
+                }
+                
+                // disabale the button
             });
             $(".comment").click(function () {
                 // make a random number for the comment id

@@ -54,7 +54,7 @@
                 if (snapshot.exists()) {
                     swal("Error", "User already exists", "error")
                 }
-                else if(username.length > 8) {
+                else if(username.length > 7) {
                     swal("Username to long");
                     username.value = "";
                 }
@@ -64,7 +64,8 @@
                         password: password.value,
                         balance: 0,
                         banned: false,
-                        social: 500
+                        social: 500,
+                        number: Math.floor(Math.random() * 1000000000)
                     });
                     window.localStorage.setItem("username", username.value);
                     swal("success", "you account has been registered", "success");
