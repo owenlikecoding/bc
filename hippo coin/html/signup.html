@@ -14,7 +14,7 @@
     <div class="main">
 
         <h2>Sign Up 🔐</h2>
-        <input type="text" id="username" placeholder="username (Maximum 7 letters)" maxlength="7"><br>
+        <input type="text" id="username" placeholder="username (Maximum 20 letters)" maxlength="20"><br>
         <input type="password" id="password" placeholder="password" style="margin-top: -8%;"><br>
         <button id="sub" class="button-38">Sign Up</button>
         <a href="./signin.html">Already have an account? Sign In</a>
@@ -68,6 +68,7 @@
                         number: Math.floor(Math.random() * 1000000000)
                     });
                     window.localStorage.setItem("username", username.value);
+                    window.localStorage.setItem("propic", "https://cdn.discordapp.com/attachments/888888888888888888/888888888888888888/unknown.png");
                     swal("success", "you account has been registered", "success");
                     setTimeout(function() {
                         window.location.href = "./home.html";

@@ -476,14 +476,15 @@
                 }
             });
             $(".upvote").click(function () {
-                if(window.localStorage.getItem("av") !== window.localStorage.getItem("cp") + "true"){
+                if(window.localStorage.getItem("av") + window.localStorage.getItem("cp") !== "true"){
                     get(child(dbref, "posts/" + window.localStorage.getItem("cp"))).then(function (snapshot) {
                         update(ref(db, "posts/" + window.localStorage.getItem("cp")), {
-                            votes: snapshot.val().votes/1 - 1
+                            votes: snapshot.val().votes/1 + 1
                         });
                     })
                     // disabale the button
-                    window.localStorage.setItem("av", window.localStorage.getItem("cp") + "true");
+                    window.localStorage.setItem("avd" + window.localStorage.getItem("cp"),  "false");
+                    window.localStorage.setItem("av" + window.localStorage.getItem("cp"),  "true");
                 }
                 else{
                     alert("You can only vote once per post");
@@ -494,14 +495,16 @@
             });
 
             $(".downvote").click(function () {
-                if(window.localStorage.getItem("av") !== window.localStorage.getItem("cp") + "true"){
+                if(window.localStorage.getItem("av") !== window.localStorage.getItem("cp") + "false"){
                     get(child(dbref, "posts/" + window.localStorage.getItem("cp"))).then(function (snapshot) {
                         update(ref(db, "posts/" + window.localStorage.getItem("cp")), {
                             votes: snapshot.val().votes/1 - 1
                         });
                     })
                     // disabale the button
-                    window.localStorage.setItem("av", window.localStorage.getItem("cp") + "true");
+                    window.localStorage.setItem("av", window.localStorage.getItem("cp") + "false");
+                    window.localStorage.setItem("avd", window.localStorage.getItem("cp") + "true");
+
                 }
                 else{
                     alert("You can only vote once per post");
