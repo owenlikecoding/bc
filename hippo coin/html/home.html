@@ -32,7 +32,9 @@
             <a href="./bank.html">Banking</a><br><br>
             <a href="./bigServer.html">Global server</a><br><br>
             <a href="./fileUpload.html">Get a image url</a><br><br>
-            <button id="signOut" class="button-38" style="background-color: rgb(184, 9, 9); color: wheat;">Sign Out</button>
+            <a href="./dms/index.html">DMs</a><br><br>
+            <button id="signOut" class="button-38" style="background-color: rgb(184, 9, 9); color: wheat;">Sign
+                Out</button>
         </div>
 
     </div>
@@ -43,6 +45,8 @@
             <p id="balanceVis" style="font-size: 3ch; margin-top: -1%;">Loading...</p>
             <p id="socialVis">Loading...</p>
             <br>
+            <h2>Notifications:</h2>
+            <ul id="notiDisplay" style="list-style: none; font-family: monofont;"></ul>
         </div>
 
     </div>
@@ -238,6 +242,41 @@
             box-shadow: none;
         }
 
+        .gg-notifications {
+            box-sizing: border-box;
+            position: relative;
+            display: block;
+            transform: scale(var(--ggs, 1));
+            width: 14px;
+            height: 14px;
+            background:
+                linear-gradient(to left, currentColor 10px, transparent 0) no-repeat right bottom/2px 8px,
+                linear-gradient(to left, currentColor 10px, transparent 0) no-repeat left top/8px 2px
+        }
+
+        .gg-notifications::after,
+        .gg-notifications::before {
+            content: "";
+            position: absolute;
+            display: block;
+            box-sizing: border-box
+        }
+
+        .gg-notifications::before {
+            width: 14px;
+            height: 14px;
+            border-left: 2px solid;
+            border-bottom: 2px solid
+        }
+
+        .gg-notifications::after {
+            width: 6px;
+            height: 6px;
+            border-radius: 4px;
+            background: currentColor;
+            top: -2px;
+            right: -2px
+        }
     </style>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
@@ -274,7 +313,7 @@
             var socialVis = document.getElementById("socialVis").innerHTML = "Social credit score:" + ' ' + snapshot.val().social;
             window.localStorage.setItem("balance", snapshot.val().balance);
             window.localStorage.setItem("social", snapshot.val().social);
-            if(snapshot.val().banned == true){
+            if (snapshot.val().banned == true) {
                 window.close();
             }
 
@@ -288,7 +327,7 @@
         });
         var propic = document.getElementById("propic");
         propic.src = window.localStorage.getItem("propic");
-       
+
         var menu = document.getElementById("menu");
         menu.addEventListener("click", myFunction)
         function myFunction(x) {
@@ -302,17 +341,40 @@
         });
         var sec = document.getElementById("sec");
         sec.addEventListener("click", function () {
-          window.location.href = "https://thebackroomsgames.com/the-backrooms/"
+            window.location.href = "https://thebackroomsgames.com/the-backrooms/"
         });
-        if(window.localStorage.getItem("lastStimulas" == null)){
+        if (window.localStorage.getItem("lastStimulas" == null)) {
             var today = new Date();
             var date = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
             window.localStorage.setItem("lastStimulas", date);
         }
-            
-    
+        var Notifaction = document.getElementById("Notifaction");
+        var notiDisplay = document.getElementById("notiDisplay");
+
+        get(child(dbref, "users/" + window.localStorage.getItem("username") + "/noti/")).then(function (snapshot) {
+            // for every notifasction in the folder append them to notiDisplay
+            snapshot.forEach(function (childSnapshot) {
+                var childKey = childSnapshot.key;
+                var childData = childSnapshot.val();
+                var post = document.createElement("li");
+
+                // format date 
+
+                post.innerHTML = `
+                        <div id="senderId">
+                            <h3>${childData.sender} Sent you a dm at ${childData.time}</h3>
+                            <a href="./dmd.html" onclick="window.localStorage.setItem('dmid', ${childData.id})">View Dm</a>
+                        </div>
+                        
+                        `
+                notiDisplay.appendChild(post);
+            });
+        });
+
+
+
     </script>
-        <script src="./change.js"></script>
+    <script src="./change.js"></script>
 
 </body>
 

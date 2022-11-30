@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DM a user</title>
+</head>
+
+<body>
+    <input type="text" id="name" placeholder="user you want to dm"><button>Submit</button>
+    <h2>User List</h2>
+    <ul id="userList">
+    </ul>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.12.1/firebase-app.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.12.1/firebase-analytics.js";
+        import { getDatabase, set, ref, get, child, onValue, update, remove } from "https://www.gstatic.com/firebasejs/9.12.1/firebase-database.js"
+        // TODO: Add SDKs for Firebase products that you want to use
+        // https://firebase.google.com/docs/web/setup#available-libraries
+
+        // Your web app's Firebase configuration
+        // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+        const firebaseConfig = {
+            apiKey: "AIzaSyBlgCt1yJFfwKguVfymD5s1uB98Y3mcL2U",
+            authDomain: "burt-coin.firebaseapp.com",
+            projectId: "burt-coin",
+            storageBucket: "burt-coin.appspot.com",
+            messagingSenderId: "942203765915",
+            appId: "1:942203765915:web:ce50f6f18a90216bce723e",
+            measurementId: "G-5CD9ZFYH8K"
+        };
+        const app = initializeApp(firebaseConfig);
+        const analytics = getAnalytics(app);
+        const db = getDatabase(app);
+        const dbref = ref(db);
+        const userRef = child(dbref, "users");
+        const userList = document.getElementById("userList");
+        const name = document.getElementById("name");
+        const button = document.querySelector("button");
+       
+        var dateNow =  new Date().toLocaleDateString('en-us', { weekday:"long", year:"numeric", month:"short", day:"numeric"}) 
+        console.log(dateNow);
+         // format date
+        
+        button.addEventListener("click", () => {
+           var randoken = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+              set(ref(db, "users/" + name.value + "/noti/" + randoken), {
+                sender: window.localStorage.getItem("username"),
+                time: dateNow,
+                id: randoken,
+              });
+              setTimeout(() => {
+                window.location.href = "../dmd.html";
+              }, 1000);
+              window.localStorage.setItem("dmid", randoken);
+        });
+        get(child(dbref, "users/")).then((snapshot) => {
+            if (snapshot.exists()) {
+                console.log(snapshot.val());
+                const users = snapshot.val();
+                for (const user in users) {
+                    const li = document.createElement("li");
+                    li.innerHTML = user;
+                    userList.appendChild(li);
+                    li.onclick = () => {
+                        name.value = user;
+                    }
+                }
+                
+            } else {
+                console.log("No data available");
+            }
+
+            });
+
+    </script>
+</body>
+
+</html>
