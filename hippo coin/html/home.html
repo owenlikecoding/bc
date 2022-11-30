@@ -285,7 +285,7 @@
         // Import the functions you need from the SDKs you need
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.12.1/firebase-app.js";
         import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.12.1/firebase-analytics.js";
-        import { getDatabase, set, ref, get, child } from "https://www.gstatic.com/firebasejs/9.12.1/firebase-database.js"
+        import { getDatabase, set, ref, get, child, remove} from "https://www.gstatic.com/firebasejs/9.12.1/firebase-database.js"
         // TODO: Add SDKs for Firebase products that you want to use
         // https://firebase.google.com/docs/web/setup#available-libraries
 
@@ -363,11 +363,24 @@
                 post.innerHTML = `
                         <div id="senderId">
                             <h3>${childData.sender} Sent you a dm at ${childData.time}</h3>
-                            <a href="./dmd.html" onclick="window.localStorage.setItem('dmid', ${childData.id})">View Dm</a>
+                            <a  onclick="window.localStorage.setItem('dmid', '${childData.id}'); setTimeout(function() {
+                                window.location.href = './dmD.html';
+                            }, 1000)" >View Dm</a>
+                            <p class="dp">Delete Post</p>
                         </div>
                         
                         `
+               
                 notiDisplay.appendChild(post);
+                var dp = document.getElementsByClassName("dp");
+                for (var i = 0; i < dp.length; i++) {
+                    dp[i].addEventListener("click", function () {
+                        var id = this.parentNode.id;
+                        var id = id.replace("senderId", "");
+                       remove(ref(db, 'users/' + window.localStorage.getItem("username") + "/noti/" + id));     
+                        window.location.reload();
+                    });
+                }
             });
         });
 
