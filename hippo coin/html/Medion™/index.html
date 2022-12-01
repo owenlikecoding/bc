@@ -62,11 +62,18 @@
                 var childKey = childSnapshot.key;
                 var childData = childSnapshot.val();
                 var video = document.createElement("video");
+                var br = document.createElement("br");
+                var h1 = document.createElement("h6");
+                var vidCont = document.createElement("div");
                 video.setAttribute("controls", "");
                 video.setAttribute("id", childKey);
                 video.setAttribute("class", "video");
                 video.setAttribute("src", childData.url);
-                videoGrid.appendChild(video);
+                h1.innerHTML = childData.title;
+                vidCont.appendChild(video);
+                vidCont.appendChild(br);
+                vidCont.appendChild(h1);
+                videoGrid.appendChild(vidCont);
                 video.addEventListener("click", function () {
                    var url = this.getAttribute("src");
                    window.localStorage.setItem("url", url);
@@ -74,6 +81,25 @@
                    window.location.href = "./videoPlayer.html";
                 });
             });
+        });
+        // search
+        var subSerch = document.getElementById("subSerch");
+        subSerch.addEventListener("click", function () {
+            var search = document.getElementById("search").value;
+            get(child(dbref, "videos/")).then(snapshot => {
+                snapshot.forEach(childSnapshot => {
+                    var childKey = childSnapshot.key;
+                    var childData = childSnapshot.val();
+                    var video = document.getElementById(childKey);
+                    if (childData.title.includes(search)) {
+                        video.style.display = "block";
+                    } else {
+                        video.style.display = "none";
+                    }
+                });
+            });
+            
+            
         });
 
 
@@ -113,8 +139,13 @@
             background-repeat: repeat-x;
         }
         video {
-            width: 20vh;
-            height: 20vh;
+            width: 300px;
+            height: 300px;
+        }
+        h6 {
+            font-family: droid-sans-mono, monospace;
+            font-weight: 400;
+            font-style: normal;
         }
 
         #top a {
