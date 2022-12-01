@@ -5,11 +5,12 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Medion™</title>
+    <title>Upload a video</title>
+</head>
 
 <body>
     <div id="top">
-        <a href="./upload.html" class="reg">Upload</a>
+        <a href="./index.html" class="reg">Home</a>
         <h1 class="beg">Medion™</h1>
         <div class="container" id="menu">
             <div class="bar1"></div>
@@ -17,18 +18,19 @@
             <div class="bar3"></div>
         </div>
     </div>
-    <div id="side">
-        <input type="text" id="search" placeholder="search for a video"><button id="subSerch">Search</button>
+    <div id="Upload">
+        <h2 class="reg">Upload a video:</h2><br>
+        <input type="file" name="file" id="file" ><br>
+        <input type="text" id="videoTitle" placeholder="video title"><br>
+        <input type="text" id="videoDescription" placeholder="video description"><br>
+        <input type="text" id="videoTags" placeholder="video tags"><br>
+        <button id="uv">Upload Video</button>
+        <p id="loading"></p>
     </div>
-    <div id="videoGrid">
-    </div>
-       
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.12.1/firebase-app.js";
         import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.12.1/firebase-analytics.js";
         import { getDatabase, set, ref, get, child, onValue, update, remove } from "https://www.gstatic.com/firebasejs/9.12.1/firebase-database.js";
-        // storage
         import { getStorage, ref as sref, uploadBytesResumable, getDownloadURL } from "https://www.gstatic.com/firebasejs/9.12.1/firebase-storage.js";
         // TODO: Add SDKs for Firebase products that you want to use
         // https://firebase.google.com/docs/web/setup#available-libraries
@@ -50,35 +52,68 @@
         const analytics = getAnalytics(app);
         const db = getDatabase(app);
         const dbref = ref(db);
-        var menu = document.getElementById("menu");
-        menu.addEventListener("click", myFunction)
-        function myFunction(x) {
-            menu.classList.toggle("change");
-            $("#side").toggle();
-        }
-        var videoGrid = document.getElementById("videoGrid");
-        get(child(dbref, "videos/")).then(snapshot => {
-            snapshot.forEach(childSnapshot => {
-                var childKey = childSnapshot.key;
-                var childData = childSnapshot.val();
-                var video = document.createElement("video");
-                video.setAttribute("controls", "");
-                video.setAttribute("id", childKey);
-                video.setAttribute("class", "video");
-                video.setAttribute("src", childData.url);
-                videoGrid.appendChild(video);
-                video.addEventListener("click", function () {
-                   var url = this.getAttribute("src");
-                   window.localStorage.setItem("url", url);
-                   window.localStorage.setItem("vid", childData.id);
-                   window.location.href = "./videoPlayer.html";
+        const storage = getStorage(app);
+        const storageRef = sref(storage);
+        const file = document.getElementById("file");
+        const videoTitle = document.getElementById("videoTitle");
+        const videoDescription = document.getElementById("videoDescription");
+        const videoTags = document.getElementById("videoTags");
+        const uploadVideo = document.getElementById("uv");
+        const loading = document.getElementById("loading");
+        uploadVideo.addEventListener("click", () => {
+            const file = document.getElementById("file").files[0];
+            const videoTitle = document.getElementById("videoTitle").value;
+            const videoDescription = document.getElementById("videoDescription").value;
+            const videoTags = document.getElementById("videoTags").value;
+            const videoRef = sref(storage, "videos/" + file.name);
+            const uploadTask = uploadBytesResumable(videoRef, file);
+            uploadTask.on('state_changed', (snapshot) => {
+                const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                console.log('Upload is ' + progress + '% done');
+                switch (snapshot.state) {
+                    case 'paused':
+                        loading.innerHTML = "Upload is paused";
+                        break;
+                    case 'running':
+                        loading.innerHTML = "Upload is running";
+                        break;
+                }
+            }, (error) => {
+                switch (error.code) {
+                    case 'storage/unauthorized':
+                        loading.innerHTML = "User doesn't have permission to access the object";
+                        break;
+                    case 'storage/canceled':
+                        loading.innerHTML = "User canceled the upload";
+                        break;
+                    case 'storage/unknown':
+                        loading.innerHTML = "Unknown error occurred, inspect error.serverResponse";
+                        break;
+                }
+            }, () => {
+                // make a random string
+                const randomString = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+                getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+                    console.log('File available at', downloadURL);
+                    const video = {
+                        title: videoTitle,
+                        description: videoDescription,
+                        tags: videoTags,
+                        url: downloadURL,
+                        likes: 0,
+                        dislikes: 0,
+                        views: 0,
+                        comments: "Comments: ",
+                        id: randomString,
+                        author: window.localStorage.getItem("username")
+                    }
+                    set(ref(db, "videos/" + randomString), video);
+                    // on the finish of the upload, add the loading to finsish
+                    loading.innerHTML = "Upload finished";
+
                 });
             });
         });
-
-
-
-
     </script>
     <style>
         @import url("https://use.typekit.net/vua8wfw.css");
@@ -112,10 +147,6 @@
             background-size: 3px 1px;
             background-repeat: repeat-x;
         }
-        video {
-            width: 20vh;
-            height: 20vh;
-        }
 
         #top a {
             position: absolute;
@@ -124,6 +155,15 @@
             padding: 1rem;
             color: black;
             text-decoration: none;
+        }
+
+        #Upload {
+            width: 100%;
+            height: 95%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
         }
 
         .container {
@@ -159,6 +199,7 @@
         .change .bar3 {
             transform: translate(0, -11px) rotate(45deg);
         }
+
         input {
             width: 70%;
             height: 20%;
@@ -170,6 +211,7 @@
             font-weight: 400;
             font-style: normal;
         }
+
         button {
             width: 30%;
             height: 20%;
@@ -181,9 +223,12 @@
             font-weight: 400;
             font-style: normal;
         }
-        #side input, button {
-           margin-top: 5%;
+
+        #side input,
+        button {
+            margin-top: 5%;
         }
+
         #side {
             width: 95%;
             width: 20%;
@@ -191,16 +236,15 @@
             margin-left: 80%;
             display: none;
         }
-        #videoGrid {
-            /* make a responsive grid */
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            grid-gap: 1rem;
-            padding: 1rem;
 
+        #videoGrid {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
         }
-        
-    </style>
+        </style>
 </body>
 
 </html>

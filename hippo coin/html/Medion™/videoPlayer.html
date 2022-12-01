@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Video Player</title>
+</head>
+
+<body>
+    <video src="" id="player" controls></video>
+    <div id="data" class="reg">
+        <h2 id="title"></h2>
+        <p id="description"></p>
+        <p id="tags"></p>
+        <p id="uploader"></p>
+        <p id="views"></p>
+        <p id="likes"></p>
+        <p id="dislikes"></p>
+        <p id="comments"></p>
+        <input type="text" name="comments" id="comment" placeholder="comment somthing nice..."><button id="sub">Submit</button>
+
+    </div>
+    <a href="../home.html"></a>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            
+        }
+
+        #player {
+            width: 100%;
+            height: 100%;
+            text-align: center;
+        }
+    </style>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.12.1/firebase-app.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.12.1/firebase-analytics.js";
+        import { getDatabase, set, ref, get, child, onValue, update, remove } from "https://www.gstatic.com/firebasejs/9.12.1/firebase-database.js";
+        // storage
+        import { getStorage, ref as sref, uploadBytesResumable, getDownloadURL } from "https://www.gstatic.com/firebasejs/9.12.1/firebase-storage.js";
+        // TODO: Add SDKs for Firebase products that you want to use
+        // https://firebase.google.com/docs/web/setup#available-libraries
+
+        // Your web app's Firebase configuration
+        // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+        const firebaseConfig = {
+            apiKey: "AIzaSyBlgCt1yJFfwKguVfymD5s1uB98Y3mcL2U",
+            authDomain: "burt-coin.firebaseapp.com",
+            projectId: "burt-coin",
+            storageBucket: "burt-coin.appspot.com",
+            messagingSenderId: "942203765915",
+            appId: "1:942203765915:web:ce50f6f18a90216bce723e",
+            measurementId: "G-5CD9ZFYH8K"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const analytics = getAnalytics(app);
+        const db = getDatabase(app);
+        const dbref = ref(db);
+        var player = document.getElementById("player");
+        player.setAttribute("src", window.localStorage.getItem("url"));
+        const videoRef = ref(db, "videos/" + window.localStorage.getItem("vid"));
+        onValue(videoRef, (snapshot) => {
+            console.log(snapshot.val());
+            document.getElementById("title").innerHTML = snapshot.val().title;
+            document.getElementById("description").innerHTML = snapshot.val().description;
+            document.getElementById("tags").innerHTML = "Tags: " + snapshot.val().tags;
+            document.getElementById("uploader").innerHTML = "Uploader: " + snapshot.val().author;
+            document.getElementById("views").innerHTML = "Views: " + snapshot.val().views;
+            document.getElementById("likes").innerHTML = "Likes: " + snapshot.val().likes;
+            document.getElementById("dislikes").innerHTML = "Dislikes: " + snapshot.val().dislikes;
+            document.getElementById("comments").innerHTML = snapshot.val().comments;
+           
+            var likes = document.getElementById("likes");   
+            var dislikes = document.getElementById("dislikes");
+            var post = "lk" + window.localStorage.getItem("vid");
+            likes.addEventListener("click", function() {
+                if(window.localStorage.getItem(post) !== "liked") {
+                update(ref(db, "videos/" + window.localStorage.getItem("vid")), {
+                    likes: snapshot.val().likes / 1 + 1,
+                });
+            }
+
+                window.localStorage.setItem(post, "liked");
+                window.localStorage.setItem(post + "d", "unliked");
+            });
+            dislikes.addEventListener("click", function() {
+                if(window.localStorage.getItem(post)  !== "disliked") {
+                update(ref(db, "videos/" + window.localStorage.getItem("vid")), {
+                    dislikes: snapshot.val().dislikes / 1 + 1,
+                });
+            }
+                window.localStorage.setItem(post, "disliked");
+                window.localStorage.setItem(post + "d", "unliked");
+            });
+            
+
+        })
+        get(child(dbref, "videos/" + window.localStorage.getItem("vid"))).then((snapshot) => {
+            update(ref(db, "videos/" + window.localStorage.getItem("vid")), {
+                views: snapshot.val().views/1 + 1,
+           });
+        }).catch((error) => {
+            console.error(error);
+        });
+        // comment 
+        var sub = document.getElementById("sub");
+        sub.addEventListener("click", function() {
+            var comment = document.getElementById("comment");
+            get(child(dbref, "videos/" + window.localStorage.getItem("vid"))).then((snapshot) => {
+                update(ref(db, "videos/" + window.localStorage.getItem("vid")), {
+                    comments: snapshot.val().comments + "<br>" + window.localStorage.getItem("username") + " says: " + comment.value,
+               });
+            }).catch((error) => {
+                console.error(error);
+            });
+            setTimeout(function () {
+                comment.value = "";
+            }, 100);
+        });
+      
+
+    </script>
+        
+        <style>
+           @import url("https://use.typekit.net/vua8wfw.css");
+   
+           * {
+               margin: 0;
+               padding: 0;
+               box-sizing: border-box;
+              
+           }
+   
+           .reg {
+               font-family: droid-sans-mono, monospace;
+               font-weight: 400;
+               font-style: normal;
+           }
+   
+           .beg {
+               font-family: "highgate", sans-serif;
+               font-weight: 400;
+               font-style: normal;
+           }
+   
+           #top {
+               width: 100%;
+               height: 5%;
+               display: flex;
+               align-items: center;
+               justify-content: center;
+               background-image: linear-gradient(to right, black 33%, rgba(255, 255, 255, 0) 0%);
+               background-position: bottom;
+               background-size: 3px 1px;
+               background-repeat: repeat-x;
+           }
+           video {
+               width: 20vh;
+               height: 20vh;
+           }
+   
+           #top a {
+               position: absolute;
+               left: 0;
+               top: 0;
+               padding: 1rem;
+               color: black;
+               text-decoration: none;
+           }
+   
+           .container {
+               display: inline-block;
+               cursor: pointer;
+               /* move the menu button to the right */
+               position: absolute;
+               right: 0;
+               top: 0;
+               padding: 1rem;
+               margin-top: -1rem;
+           }
+   
+   
+           .bar1,
+           .bar2,
+           .bar3 {
+               width: 35px;
+               height: 5px;
+               background-color: #333;
+               margin: 6px 0;
+               transition: 0.4s;
+           }
+   
+           .change .bar1 {
+               transform: translate(0, 11px) rotate(-45deg);
+           }
+   
+           .change .bar2 {
+               opacity: 0;
+           }
+   
+           .change .bar3 {
+               transform: translate(0, -11px) rotate(45deg);
+           }
+           input {
+               width: 70%;
+               height: 20%;
+               border: 1px dashed black;
+               outline: none;
+               font-size: .8rem;
+               padding: .8rem;
+               font-family: droid-sans-mono, monospace;
+               font-weight: 400;
+               font-style: normal;
+           }
+           button {
+               width: 30%;
+               height: 20%;
+               border: 1px dashed black;
+               outline: none;
+               font-size: .8rem;
+               padding: .8rem;
+               font-family: droid-sans-mono, monospace;
+               font-weight: 400;
+               font-style: normal;
+           }
+           #side input, button {
+              margin-top: 5%;
+           }
+           #side {
+               width: 95%;
+               width: 20%;
+               display: flex;
+               margin-left: 80%;
+               display: none;
+           }
+           #videoGrid {
+               /* make a responsive grid */
+               display: grid;
+               grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+               grid-gap: 1rem;
+               padding: 1rem;
+   
+           }
+           
+       </style>
+</body>
+
+</html>
