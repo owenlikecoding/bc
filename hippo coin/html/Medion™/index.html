@@ -91,7 +91,7 @@
                     var childKey = childSnapshot.key;
                     var childData = childSnapshot.val();
                     var video = document.getElementById(childKey);
-                    if (childData.title.includes(search)) {
+                    if (childData.title.includes(search) || childData.description.includes(search) || childData.tags.includes(search)) {
                         video.style.display = "block";
                     } else {
                         video.style.display = "none";

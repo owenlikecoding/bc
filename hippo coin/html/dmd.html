@@ -15,27 +15,31 @@
     <script src="./change.js"></script>
 
     <div class="top">
-    <h1 id="l">Dms</h1> 
-    <a href="./home.html" style="font-family: monofont;">Back to home</a>
-    <a href="./home.html"><button onclick="window.localStorage.removeItem('dmid')"style="background-color: rgb(166, 8, 8); color: wheat; margin-left: 1%;" class="button-38">Leave</button></a>
-    <button id="del" style="background-color: rgb(166, 8, 8); color: wheat; margin-left: .1%; display: none;" class="button-38">Delete post</button>
-    <i id="on">Online</i>
+        <h1 id="l">Dms</h1>
+        <a href="./home.html" style="font-family: monofont;">Back to home</a>
+        <a href="./home.html"><button onclick="window.localStorage.removeItem('dmid')"
+                style="background-color: rgb(166, 8, 8); color: wheat; margin-left: 1%;"
+                class="button-38">Leave</button></a>
+        <button id="del" style="background-color: rgb(166, 8, 8); color: wheat; margin-left: .1%; display: none;"
+            class="button-38">Delete post</button>
+        <i id="on">Online</i>
     </div>
     <div class="online" style="display: none;">
         <h3>Online:</h3>
-    <ol id="online"></ol>
+        <ol id="online"></ol>
     </div>
-    
+
     <ul id="stuff">
 
     </ul><br>
     <div id="ag">
-        
-    <input type="text" id="content" placeholder="say somthing nice">
-    <button id="sub" class="button-38">Submit</button><button class="button-38" id="imgd" style="margin-left: 1%;">Uplaod as image url </button>
-    <p id="typing"></p>
-  
-</div>
+
+        <input type="text" id="content" placeholder="say somthing nice">
+        <button id="sub" class="button-38">Submit</button><button class="button-38" id="imgd"
+            style="margin-left: 1%;">Uplaod as image url </button>
+        <p id="typing"></p>
+
+    </div>
 
     <script type="module">
         // Import the functions you need from the SDKs you need
@@ -62,305 +66,320 @@
         const analytics = getAnalytics(app);
         const db = getDatabase(app);
         const dbref = ref(db);
-       // make a badword filter
-        const badwords =  ["burt coin is bad", 
-        "shit", "bitch", "nigger", "fuc", "pussy", "ass", "fuck", "dick", "numnut", "cunt"]
+        // make a badword filter
+        const badwords = ["burt coin is bad",
+            "shit", "bitch", "nigger", "fuc", "pussy", "ass", "fuck", "dick", "numnut", "cunt"]
 
-      
-          
-        
-      window.setTimeout(function() {
-        get(child(dbref, window.localStorage.getItem("dmid") + "/")).then(function(snapshot) {
-            if(window.localStorage.getItem("username") == snapshot.val().owned) {
-                $("#del").show();
-                $("#del").click(function() {
-                    let id = prompt("enter the post id you want to delete");
-                    remove(ref(db, window.localStorage.getItem("dmid") + "/" + id));
-                });
-                $(".postid").show();
-            }
 
-            
-            
-        })
-    }, 2000);
-      var online = document.getElementById("online");
-      
+
+
+        window.setTimeout(function () {
+            get(child(dbref, window.localStorage.getItem("dmid") + "/")).then(function (snapshot) {
+                if (window.localStorage.getItem("username") == snapshot.val().owned) {
+                    $("#del").show();
+                    $("#del").click(function () {
+                        let id = prompt("enter the post id you want to delete");
+                        remove(ref(db, window.localStorage.getItem("dmid") + "/" + id));
+                    });
+                    $(".postid").show();
+                }
+
+
+
+            })
+        }, 2000);
+        var online = document.getElementById("online");
+
         var dmid = window.localStorage.getItem("dmid");
         var l = document.getElementById("l");
         var content = document.getElementById("content");
         var sub = document.getElementById("sub");
         var imgd = document.getElementById("imgd");
-        imgd.onclick = function() {
-            get(child(dbref, "users/" +  "number/")).then(function (snapshot) {
-              
-              var num = snapshot.val().num;
+        imgd.onclick = function () {
+            get(child(dbref, "users/" + "number/")).then(function (snapshot) {
 
-            update(ref(db, dmid + "/" + num), {
-                content: "",
-                imageurl: content.value,
-                name: window.localStorage.getItem("username"),
-                postid: num
-            });
-            set(ref(db, "users/" +  "number/"), {
-                    num: num/1 - 1
+                var num = snapshot.val().num;
+
+                update(ref(db, dmid + "/" + num), {
+                    content: "",
+                    imageurl: content.value,
+                    name: window.localStorage.getItem("username"),
+                    postid: num
                 });
-            
+                set(ref(db, "users/" + "number/"), {
+                    num: num / 1 - 1
+                });
+
             });
-            window.setTimeout(function() {
+            window.setTimeout(function () {
                 content.value = ""
             }, 400)
-            
+
         }
-        document.onkeydown = function(e) {
-            if(e.keyCode === 13) {
-                  // check if bad words are in content
-            var bad = false;
-            for(var i = 0; i < badwords.length; i++) {
-                if(content.value.includes(badwords[i])) {
-                    bad = true;
-                    content.vale = "";
+        document.onkeydown = function (e) {
+            if (e.keyCode === 13) {
+                // check if bad words are in content
+                var bad = false;
+                for (var i = 0; i < badwords.length; i++) {
+                    if (content.value.includes(badwords[i])) {
+                        bad = true;
+                        content.vale = "";
+                    }
+                }
+                if (bad == true) {
+                    alert("bad word detected");
+                } else {
+                    get(child(dbref, "users/" + "number/")).then(function (snapshot) {
+
+                        var num = snapshot.val().num;
+
+                        update(ref(db, dmid + "/" + num), {
+                            content: content.value,
+                            name: window.localStorage.getItem("username"),
+                            postid: num
+                        });
+                        set(ref(db, "users/" + "number/"), {
+                            num: num / 1 - 1
+                        });
+
+                    });
+                    window.setTimeout(function () {
+                        content.value = "";
+                        content.focus();
+                    }, 100)
                 }
             }
-            if(bad == true) {
-                alert("bad word detected");
-            } else {
-                get(child(dbref, "users/" +  "number/")).then(function (snapshot) {
-              
-              var num = snapshot.val().num;
-
-            update(ref(db, dmid + "/" + num), {
-                content: content.value,
-                name: window.localStorage.getItem("username"),
-                postid: num
-            });
-            set(ref(db, "users/" +  "number/"), {
-                    num: num/1 - 1
-                });
-            
-            });
-            window.setTimeout(function() {
-                content.value = "";
-                content.focus();
-            }, 100)
-            }
         }
-        }
-        sub.onclick = function() { 
+        sub.onclick = function () {
             // check if bad words are in content
             var bad = false;
-            for(var i = 0; i < badwords.length; i++) {
-                if(content.value.includes(badwords[i])) {
+            for (var i = 0; i < badwords.length; i++) {
+                if (content.value.includes(badwords[i])) {
                     bad = true;
                     content.vale = "";
                 }
             }
-            if(bad == true) {
+            if (bad == true) {
                 alert("bad word detected");
             } else {
-                
-               
-            
 
-            get(child(dbref, "users/" +  "number/")).then(function (snapshot) {
-              
-              var num = snapshot.val().num;
 
-            update(ref(db, dmid + "/" + num), {
-                content: content.value,
-                name: window.localStorage.getItem("username"),
-                postid: num
-            });
-            set(ref(db, "users/" +  "number/"), {
-                    num: num/1 - 1
+
+
+                get(child(dbref, "users/" + "number/")).then(function (snapshot) {
+
+                    var num = snapshot.val().num;
+
+                    update(ref(db, dmid + "/" + num), {
+                        content: content.value,
+                        name: window.localStorage.getItem("username"),
+                        postid: num
+                    });
+                    set(ref(db, "users/" + "number/"), {
+                        num: num / 1 - 1
+                    });
+
                 });
-            
-            });
-            window.setTimeout(function() {
-                content.value = ""
-                content.focus();
-            }, 400)  
-        }
+                window.setTimeout(function () {
+                    content.value = ""
+                    content.focus();
+                }, 400)
+            }
         }
         const dmRef = ref(db, window.localStorage.getItem("dmid") + "/")
         var stuff = document.getElementById("stuff");
         var sound = new Audio("../assets/notification.mp3");
         onValue(dmRef, (snapshot) => {
             stuff.innerHTML = ""
-            
-           
-         
+
+
+
             snapshot.forEach(function (childSnapshot) {
-            
-            var childKey = childSnapshot.key;
+
+                var childKey = childSnapshot.key;
                 var childData = childSnapshot.val();
                 var post = document.createElement("li");
-             if(childData.name !== window.localStorage.getItem("username")) {
-                sound.play();
-             }
-             
-               
-                if(childData.imageurl == undefined) {
+                if (childData.name !== window.localStorage.getItem("username")) {
+                    sound.play();
+                }
+
+
+                if (childData.imageurl == undefined) {
                     post.innerHTML = `<div class="said">
                                             <h2 class="postid" style="display: none;">${childData.postid}</h2>
                                             <h2 class="name">${childData.name}</h2>
                                             <p class="content">${childData.content}</p>
                                        </div>
                         `
-                        stuff.appendChild(post);
-                                    }
-                                    else {
-                                        post.innerHTML = `<div class="said">
+                    stuff.appendChild(post);
+                }
+                else {
+                    post.innerHTML = `<div class="said">
                                             <h4 class="postid" style="display: none; ">${childData.postid}</h4>
                                             <h2 class="name">${childData.name}</h2>
                                             <img src="${childData.imageurl}" width="200px">
                                             <p class="content">${childData.content}</p>
                                        </div>
                         `
-                        stuff.appendChild(post);
-                                    }
+                    stuff.appendChild(post);
+                }
 
             });
             l.innerHTML = "Chat room" + ' ' + window.localStorage.getItem("dmid");
-            if(window.localStorage.getItem("username") == snapshot.val().owned) {
+            if (window.localStorage.getItem("username") == snapshot.val().owned) {
                 $("#del").show();
-                $("#del").click(function() {
-                    let id = prompt("enter the post id you want to delete");
-                    remove(ref(db, window.localStorage.getItem("dmid") + "/" + id));
-                });
+
                 $(".postid").show();
             }
+
         });
-        
-    if(window.localStorage.getItem("typing") == "true") {
-               
-    
-       setInterval(function() {
-            if(content.value == "") {
-                update(ref(db, "users/" + window.localStorage.getItem("username")), {
-                    typing: false
-                });
-            }
-           
-            else {
-                update(ref(db, "users/" + window.localStorage.getItem("username")), {
-                    typing: true,
-                    dmid: window.localStorage.getItem("dmid")
-                });
-            }
+
+        if (window.localStorage.getItem("typing") == "true") {
 
 
-        }, 1000);
-        onValue(ref(db, "users/"), (snapshot) => {
-            
-            typing.innerHTML = ""
+            setInterval(function () {
+                if (content.value == "") {
+                    update(ref(db, "users/" + window.localStorage.getItem("username")), {
+                        typing: false
+                    });
+                }
+
+                else {
+                    update(ref(db, "users/" + window.localStorage.getItem("username")), {
+                        typing: true,
+                        dmid: window.localStorage.getItem("dmid")
+                    });
+                }
+
+
+            }, 1000);
+            onValue(ref(db, "users/"), (snapshot) => {
+
+                typing.innerHTML = ""
+                snapshot.forEach(function (childSnapshot) {
+                    var childKey = childSnapshot.key;
+                    var childData = childSnapshot.val();
+                    if (childData.typing == true) {
+                        var typer = document.createElement("li");
+                        typer.innerHTML = childData.username + " is typing....";
+                        typing.appendChild(typer);
+                    }
+                });
+            });
+        }
+
+
+        update(ref(db, "users/" + window.localStorage.getItem("username")), {
+            online: true
+        });
+        const onlineRef = ref(db, "users/");
+        onValue(onlineRef, (snapshot) => {
+            online.innerHTML = ""
             snapshot.forEach(function (childSnapshot) {
-            var childKey = childSnapshot.key;
+                var childKey = childSnapshot.key;
                 var childData = childSnapshot.val();
-                if(childData.typing == true) {
-                    var typer = document.createElement("li");
-                    typer.innerHTML = childData.username + " is typing....";
-                    typing.appendChild(typer);
+                if (childData.online == true) {
+                    var onlineuser = document.createElement("li");
+                    onlineuser.innerHTML = childData.username;
+                    online.appendChild(onlineuser);
                 }
             });
         });
-    }
-      
-        
-              update(ref(db, "users/" + window.localStorage.getItem("username")), {
-                    online: true
-                });
-                const onlineRef = ref(db, "users/");
-                onValue(onlineRef, (snapshot) => {
-                    online.innerHTML = ""
-                    snapshot.forEach(function (childSnapshot) {
-                    var childKey = childSnapshot.key;
-                        var childData = childSnapshot.val();
-                        if(childData.online == true) {
-                            var onlineuser = document.createElement("li");
-                            onlineuser.innerHTML = childData.username;
-                            online.appendChild(onlineuser);
-                        }
-                    });
-                });
-                var onlined = document.getElementsByClassName("online");
-                window.addEventListener("beforeunload", function(e){
-                    update(ref(db, "users/" + window.localStorage.getItem("username")), {
-                    online: false
-                });
-            
-                }, false);
-                content.focus();  
-             
+        var onlined = document.getElementsByClassName("online");
+        window.addEventListener("beforeunload", function (e) {
+            update(ref(db, "users/" + window.localStorage.getItem("username")), {
+                online: false
+            });
+
+        }, false);
+        content.focus();
+        var del = document.getElementById("del");
+        del.onclick = function() {
+            var postid = prompt("Enter post id to delete");
+            remove(ref(db, window.localStorage.getItem("dmid") + "/" + postid));
+        }
     </script>
     <script>
         var on = document.getElementById("on");
-        on.onclick = function() {
+        on.onclick = function () {
             $(".online").toggle();
         }
     </script>
     <style>
-        
         ul {
             height: 70vh;
             overflow: scroll;
             width: 90%;
             list-style: none;
         }
+
         h1 {
             text-shadow: black 2px 2px;
         }
+
         .postid {
             font-family: monofont;
             font-size: medium;
         }
+
         .content {
             margin-left: .5%;
             font-family: monofont;
         }
+
         .said {
             height: 5%;
             margin-top: 1%;
         }
-      ol {
-        font-family: monofont;
-      }
-      .top {
+
+        ol {
+            font-family: monofont;
+        }
+
+        .top {
             display: flex;
             justify-content: space-evenly;
             align-items: center;
             height: 10%;
             background-color: rgb(11, 7, 72);
-      }
-      .online {
-        position: fixed;
-        left: 73%;
-        width: 20%;
-        height: 20%;
-        margin-top: 1.5%;
-        background-color: rgb(15, 15, 65);
-        padding: 2%;
-        border-radius: 5px;
-        box-shadow: 0 0 10px rgb(255, 255, 255);
-    
-      }
-      .online >  h3 {
-        text-align: center;
-        color: white;
-      }
-      @media screen and (max-width: 600px) {
-        h2, h1, p, a, button  {
-            font-size: x-small;
         }
-        button {
-            scale: .8;
-        }
+
         .online {
-            overflow: scroll;
+            position: fixed;
+            left: 73%;
+            width: 20%;
+            height: 20%;
+            margin-top: 1.5%;
+            background-color: rgb(15, 15, 65);
+            padding: 2%;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgb(255, 255, 255);
+
         }
-      }
-        
-      
+
+        .online>h3 {
+            text-align: center;
+            color: white;
+        }
+
+        @media screen and (max-width: 600px) {
+
+            h2,
+            h1,
+            p,
+            a,
+            button {
+                font-size: x-small;
+            }
+
+            button {
+                scale: .8;
+            }
+
+            .online {
+                overflow: scroll;
+            }
+        }
     </style>
 </body>
 

@@ -481,7 +481,11 @@
                         update(ref(db, "posts/" + window.localStorage.getItem("cp")), {
                             votes: snapshot.val().votes/1 + 1
                         });
-                    })
+                        update(ref(db, "users/" + snapshot.val().name), {
+                            social: snapshot.val().social/1 + 1
+                        });
+                    });
+                    
                     // disabale the button
                     window.localStorage.setItem("av" , window.localStorage.getItem("cp") + "true");
                     window.localStorage.setItem("avd" , window.localStorage.getItem("cp") + "false");

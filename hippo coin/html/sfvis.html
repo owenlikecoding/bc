@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -12,12 +13,13 @@
         }
     </style>
 </head>
+
 <body>
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <div id="top">
-    <h1 id="storefrontName"></h1>
-    <h3 id="storefrontDesc"></h3>
+        <h1 id="storefrontName"></h1>
+        <h3 id="storefrontDesc"></h3>
     </div>
     <h2>products:</h2>
 
@@ -37,12 +39,12 @@
             justify-content: space-evenly;
             align-items: center;
         }
+
         ul {
             list-style-type: none;
             width: 80%;
             border: rgb(255, 255, 255) solid 1px;
         }
-
     </style>
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.12.1/firebase-app.js";
@@ -76,20 +78,20 @@
             sfd.innerHTML = data.description;
         });
 
-       
-          // get products from db
-          get(child(dbref, "storefronts/" + window.localStorage.getItem("sv"))).then( function(snapshot) {
+
+        // get products from db
+        get(child(dbref, "storefronts/" + window.localStorage.getItem("sv"))).then(function (snapshot) {
             pro.innerHTML = "";
             snapshot.forEach(function (childSnapshot) {
-            var childKey = childSnapshot.key;
+                var childKey = childSnapshot.key;
                 var childData = childSnapshot.val();
                 var post = document.createElement("li");
-                if(childData.product === undefined) {
+                if (childData.product === undefined) {
                     post.innerHTML = ""
                 }
 
-              
-              
+
+
                 else {
                     post.innerHTML = `<div class="said">
                                             <h2 class="name">${childData.product}</h2>
@@ -99,38 +101,50 @@
                                             <button class="buy" onclick="window.localStorage.setItem('z', '${childData.id}');">buy</button>
                                        </div>
                         `
-                        pro.appendChild(post);
+                    pro.appendChild(post);
                 }
             });
-          
-                document.body.style.background = `${snapshot.val().background}`;
-                document.body.style.color = `${snapshot.val().textColor}`;
+
+            document.body.style.background = `${snapshot.val().background}`;
+            document.body.style.color = `${snapshot.val().textColor}`;
         });
-setTimeout(function() {
-      $(".buy").click(function() {
-    
-        get(child(dbref, "storefronts/" + window.localStorage.getItem("sv") + "/" + window.localStorage.getItem("z") + "/")).then(function(snapshot) {
-            var balance = window.localStorage.getItem("balance");
-            var price = snapshot.val().productPrice;
-            if(balance < price) {
-            alert("you don't have enough money to buy this product")
-            }
-           else {
-            alert("you bought " + snapshot.val().product);
-            var newBalance = balance - price;
-            window.localStorage.setItem("balance", newBalance);
-            update(ref(db, "users/" + window.localStorage.getItem("username") + "/"), {
-                balance: newBalance
+        setTimeout(function () {
+            $(".buy").click(function () {
+
+                get(child(dbref, "storefronts/" + window.localStorage.getItem("sv") + "/" + window.localStorage.getItem("z") + "/")).then(function (snapshot) {
+                    var balance = window.localStorage.getItem("balance");
+                    var price = snapshot.val().productPrice;
+                    if (balance < price) {
+                        alert("you don't have enough money to buy this product")
+                    }
+                    else {
+                        alert("you bought " + snapshot.val().product);
+                        var newBalance = balance - price;
+                        window.localStorage.setItem("balance", newBalance);
+                        update(ref(db, "users/" + window.localStorage.getItem("username") + "/"), {
+                            balance: newBalance
+                        });
+                        // make and random id
+                        var token = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+                        window.localStorage.setItem("dmid", token);
+                        // notifaction
+                        get(child(dbref, "storefronts/" + window.localStorage.getItem("sv"))).then(function (snapshot) {
+                            update(ref(db, "users/" + snapshot.val().own + "/noti/"), {
+                                id: token,
+                                sender: window.localStorage.getItem("username"),
+                                date: "you sold a product"
+                            });
+                        });
+
+                        remove(ref(db, "storefronts/" + window.localStorage.getItem("sv") + "/" + window.localStorage.getItem("z") + "/"));
+                        window.location.href = "./dmd.html";
+                    }
+                })
+
             });
-            alert("Dm to the owner of " + window.localStorage.getItem("sv") + " to get your product");
-            remove(ref(db, "storefronts/" + window.localStorage.getItem("sv") + "/" + window.localStorage.getItem("z") + "/"));
-            window.location.href = "./rdms.html";
-           }
-        })
-           
-        });
-    }, 2000);
-           
+        }, 2000);
+
     </script>
 </body>
+
 </html>
