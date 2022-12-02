@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel</title>
+</head>
+<body>
+    
+    <div id="signIn">
+        <h2>Burt Coin Admin</h2>
+        <input type="text" id="username" placeholder="Admin Username"><br>
+        <input type="password" id="password" placeholder="Admin Password"><br>
+        <input type="number" id="code" placeholder="Secret Code"><br>
+        <button id="signInButton">Sign In</button>
+    </div>
+    <script>
+        // dom vars 
+        const signIn = document.getElementById("signIn");
+        const username = document.getElementById("username");
+        const password = document.getElementById("password");
+        const code = document.getElementById("code");
+        const signInButton = document.getElementById("signInButton");
+        signInButton.onclick = function() {
+            if (username.value == "admin" && password.value == "ThisIsBurt123" && code.value == 432) {
+                window.location.href = "admin.html";
+            } else {
+                alert("Incorrect Username, Password, or Code");
+            }
+        }
+    </script>
+    <style>
+        #signIn {
+            margin: auto;
+            width: 50%;
+            border: 3px solid green;
+            padding: 10px;
+        }
+        #signIn input {
+            width: 100%;
+            padding: 12px 20px;
+            margin: 8px 0;
+            display: inline-block;
+            border: 1px solid #ccc;
+            box-sizing: border-box;
+        }
+        #signIn button {
+            width: 100%;
+            background-color: #4CAF50;
+            color: white;
+            padding: 14px 20px;
+            margin: 8px 0;
+            border: none;
+            cursor: pointer;
+        }
+        #signIn button:hover {
+            opacity: 0.8;
+        }
+        h2 {
+            text-align: center;
+            font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+        }
+
+    </style>
+</body>
+</html>
