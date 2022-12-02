@@ -9,8 +9,10 @@
 </head>
 
 <body>
-    <input type="text" id="name" placeholder="user you want to dm"><button>Submit</button>
+    <h1>DMs (click on user to dm)</h1>
+    <input type="text" id="name" placeholder="user you want to dm"><button class="button-38">Submit</button>
     <h2>User List</h2>
+    <!-- search a user -->
     <ul id="userList">
     </ul>
     <script type="module">
@@ -39,22 +41,22 @@
         const userList = document.getElementById("userList");
         const name = document.getElementById("name");
         const button = document.querySelector("button");
-       
-        var dateNow =  new Date().toLocaleDateString('en-us', { weekday:"long", year:"numeric", month:"short", day:"numeric"}) 
+
+        var dateNow = new Date().toLocaleDateString('en-us', { weekday: "long", year: "numeric", month: "short", day: "numeric" })
         console.log(dateNow);
-         // format date
-        
+        // format date
+
         button.addEventListener("click", () => {
-           var randoken = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
-              set(ref(db, "users/" + name.value + "/noti/" + randoken), {
+            var randoken = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+            set(ref(db, "users/" + name.value + "/noti/" + randoken), {
                 sender: window.localStorage.getItem("username"),
                 time: dateNow,
                 id: randoken,
-              });
-              setTimeout(() => {
+            });
+            setTimeout(() => {
                 window.location.href = "../dmd.html";
-              }, 1000);
-              window.localStorage.setItem("dmid", randoken);
+            }, 1000);
+            window.localStorage.setItem("dmid", randoken);
         });
         get(child(dbref, "users/")).then((snapshot) => {
             if (snapshot.exists()) {
@@ -68,14 +70,28 @@
                         name.value = user;
                     }
                 }
-                
+
             } else {
                 console.log("No data available");
             }
 
-            });
+        });
+    
 
     </script>
+    <style>
+        @import url("../main.css");
+        body {
+            overflow: scroll;
+        }
+        ul {
+            font-family: monofont;
+        }
+        input {
+            width: 20%;
+        }
+
+    </style>
 </body>
 
 </html>
