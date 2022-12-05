@@ -33,6 +33,7 @@
             <a href="./bigServer.html">Global server</a><br><br>
             <a href="./fileUpload.html">Get a image url</a><br><br>
             <a href="./dms/index.html">DMs</a><br><br>
+            <a href="./dms/veiwdm.html">View Previous DMs</a><br><br>
             <a href="./Medion™/index.html">Medion™</a><br><br>
             <button id="signOut" class="button-38" style="background-color: rgb(184, 9, 9); color: wheat;">Sign Out</button>
         </div>
@@ -385,9 +386,34 @@
                 }
             });
         });
-
-
-
+        // request norifaction permission
+        Notification.requestPermission().then(function (result) {
+            console.log(result);
+        });
+        if (Notification.permission == "granted") {
+            // send a push notifaction to a user whenever they get a dm
+            get(child(dbref, "users/" + window.localStorage.getItem("username") + "/noti/")).then(function (snapshot) {
+                snapshot.forEach(function (childSnapshot) {
+                    var childKey = childSnapshot.key;
+                    var childData = childSnapshot.val();
+                    var options = {
+                        body: childData.message,
+                        icon: "https://thebackroomsgames.com/the-backrooms/img/coin.png",
+                        vibrate: [100, 50, 100],
+                        data: {
+                            dateOfArrival: Date.now(),
+                            primaryKey: 1
+                        }
+                    }
+                    var noti = new Notification(childData.sender + " sent you a dm", options);
+                    noti.onclick = function (event) {
+                        event.preventDefault(); // prevent the browser from focusing the Notification's tab
+                        window.localStorage.setItem("dmid", childData.id);
+                        window.location.href = "./dmd.html";
+                    }
+                });
+            });
+        }
     </script>
     <script src="./change.js"></script>
 

@@ -10,6 +10,7 @@
 
 <body>
     <h1>DMs (click on user to dm)</h1>
+    <a href="./veiwdm.html">Previous Dms</a><br>
     <input type="text" id="name" placeholder="user you want to dm"><button class="button-38">Submit</button>
     <h2>User List</h2>
     <!-- search a user -->
@@ -52,6 +53,11 @@
                 sender: window.localStorage.getItem("username"),
                 time: dateNow,
                 id: randoken,
+            });
+            set(ref(db, "users/" + window.localStorage.getItem("username") + "/preNoti/" + name.value), {
+                from: window.localStorage.getItem("username"),
+                to: name.value,
+                messageId: randoken,
             });
             setTimeout(() => {
                 window.location.href = "../dmd.html";

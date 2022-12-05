@@ -298,6 +298,16 @@
             var postid = prompt("Enter post id to delete");
             remove(ref(db, window.localStorage.getItem("dmid") + "/" + postid));
         }
+        // search url incase of dm
+        var url = window.location.href;
+        var urlsplit = url.split("?");
+        if (urlsplit[1] !== undefined) {
+            var dmid = urlsplit[1];
+            window.localStorage.setItem("dmid", dmid);
+        }
+        else {
+            window.localStorage.setItem("typing", "false");
+        }
     </script>
     <script>
         var on = document.getElementById("on");
