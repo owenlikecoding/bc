@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Burt Coin Document editor</title>
+</head>
+<body>
+    <div id="top">
+        <h1>Burt Coin Doc Editor</h1>
+        <a href="../home.html">Back To Home</a>
+    </div>
+    <div id="main">
+        <div id="editBar">
+            <button id="print">Print</button><button id="underline">Underline</button><input type="color" id="textColor"><button id="share">Share to twitter</button><button id="italic">Italic</button><button id="bold">Bold</button>
+        </div>
+        <textarea id="text" cols="50" rows="20"></textarea>
+    </div>
+    <script>
+        let text = document.getElementById("text");
+        let print = document.getElementById("print");
+        let underline = document.getElementById("underline");
+        let textColor = document.getElementById("textColor");
+        let share = document.getElementById("share");
+        let italic = document.getElementById("italic");
+        let bold = document.getElementById("bold");
+        print.addEventListener("click", function(){
+            window.print();
+        });
+        underline.addEventListener("click", function(){
+            text.style.textDecoration = "underline";
+        });
+        textColor.addEventListener("change", function(){
+            text.style.color = textColor.value;
+        });
+        share.addEventListener("click", function(){
+            let textValue = text.value;
+            let textValueEncoded = encodeURIComponent(textValue);
+            let url = "https://twitter.com/intent/tweet?text=" + textValueEncoded;
+            window.open(url, "_blank");
+        });
+        italic.addEventListener("click", function(){
+            text.style.fontStyle = "italic";
+        });
+        bold.addEventListener("click", function(){
+            text.style.fontWeight = "bold";
+        });
+    </script>
+</body>
+</html>
