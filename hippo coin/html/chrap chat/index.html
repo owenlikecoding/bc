@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ćhrapchat</title>
+</head>
+<body>
+    <div id="top">
+        <h1>ćhrapchat</h1>
+        <h2>chrap with your friends</h2>
+    </div>
+    <div id="contacts">
+        <ul id="list-of-freinds"></ul>
+        <button id="add-freind">Got No Freinds? Add one!</button>
+    </div>
+    <ul id="messages-from-users">
+
+    </ul>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.12.1/firebase-app.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.12.1/firebase-analytics.js";
+        import { getDatabase, set, ref, get, child, remove} from "https://www.gstatic.com/firebasejs/9.12.1/firebase-database.js"
+        // TODO: Add SDKs for Firebase products that you want to use
+        // https://firebase.google.com/docs/web/setup#available-libraries
+
+        // Your web app's Firebase configuration
+        // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+        const firebaseConfig = {
+            apiKey: "AIzaSyBlgCt1yJFfwKguVfymD5s1uB98Y3mcL2U",
+            authDomain: "burt-coin.firebaseapp.com",
+            projectId: "burt-coin",
+            storageBucket: "burt-coin.appspot.com",
+            messagingSenderId: "942203765915",
+            appId: "1:942203765915:web:ce50f6f18a90216bce723e",
+            measurementId: "G-5CD9ZFYH8K"
+        };
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const analytics = getAnalytics(app);
+        const db = getDatabase(app);
+        const dbref = ref(db);
+        const contacts = document.getElementById("list-of-freinds");
+        const addFreind = document.getElementById("add-freind");
+        const top = document.getElementById("top");
+        get(child(dbref, "users/" + window.localStorage.getItem("username") + "freinds/")).then((snapshot) => {
+            if (snapshot.exists()) {
+                snapshot.forEach((child) => {
+                    const li = document.createElement("li");
+                    li.innerHTML = `
+                    <div id="freind-child">
+                        <h2>${child.key}</h2>
+                        <button id="remove-freind">Remove</button>
+                        <button id="message-freind">Message</button>
+                    </div>`;
+                    contacts.appendChild(li);
+                });
+            } else {
+                console.log("No data available");
+            }
+        }).catch((error) => {
+            console.error(error);
+        });
+        addFreind.addEventListener("click", () => {
+            const username = prompt("Enter the username of the freind you want to add");
+            set(child(dbref, "users/" + window.localStorage.getItem("username") + "freinds/" + username), true);
+            const li = document.createElement("li");
+            li.innerHTML = `
+                    <div id="freind-child">
+                        <h2>${username}</h2>
+                        <button id="remove-freind">Remove</button>
+                        <button id="message-freind">Message</button>
+                    </div>`;
+            contacts.appendChild(li);
+        });
+        document.body.addEventListener("click", (e) => {
+            if (e.target.id === "remove-freind") {
+                const username = e.target.parentElement.children[0].innerHTML;
+                remove(child(dbref, "users/" + window.localStorage.getItem("username") + "freinds/" + username));
+                e.target.parentElement.parentElement.remove();
+            }
+        });
+        // message-freind
+        document.body.addEventListener("click", (e) => {
+            if (e.target.id === "message-freind") {
+                const username = e.target.parentElement.children[0].innerHTML;
+                window.location.href = "message.html?" + username;
+            }
+        });
+       
+        // mesages from users
+        get(child(dbref, "messages/" + window.localStorage.getItem("username"))).then((snapshot) => {
+            if (snapshot.exists()) {
+                snapshot.forEach((child) => {
+                    const li = document.createElement("li");
+                    const data = child.val();
+                    li.innerHTML = `
+                    <div id="freind-child">
+                        <h2>${data.sender}</h2>
+                        <button class="open">Open</button>
+                    </div>`;
+                    contacts.appendChild(li);
+                });
+            } else {
+                console.log("No data available");
+            }
+        }).catch((error) => {
+            console.error(error);
+        });
+
+        document.body.addEventListener("click", (e) => {
+            if (e.target.className === "open") {
+                const username = e.target.parentElement.children[0].innerHTML;
+                window.location.href = "message.html?" + username;
+            }
+        });
+
+    </script>
+    <style>
+       /* write all the pages css */
+         body {
+              margin: 0;
+              padding: 0;
+              background-color: #1e1e1e;
+              color: white;
+              font-family: sans-serif;
+         }
+            #top {
+                background-color: #1e1e1e;
+                text-align: center;
+                padding: 20px;
+            }
+            #top h1 {
+                font-size: 50px;
+                margin: 0;
+                padding: 0;
+            }
+            #top h2 {
+                font-size: 20px;
+                margin: 0;
+                padding: 0;
+            }
+            #contacts {
+                background-color: #1e1e1e;
+                text-align: center;
+                padding: 20px;
+            }
+            #contacts ul {
+                list-style: none;
+                margin: 0;
+                padding: 0;
+            }
+            #contacts ul li {
+                background-color: #1e1e1e;
+                padding: 20px;
+                margin: 20px;
+                border-radius: 10px;
+                border: 1px solid white;
+            }
+            #contacts ul li h2 {
+                font-size: 20px;
+                margin: 0;
+                padding: 0;
+            }
+            #contacts ul li button {
+                background-color: #1e1e1e;
+                color: white;
+                border: 1px solid white;
+                border-radius: 10px;
+                padding: 10px;
+                margin: 10px;
+            }
+            #contacts ul li button:hover {
+                background-color: white;
+                color: #1e1e1e;
+            }
+            #add-freind {
+                background-color: #1e1e1e;
+                color: white;
+                border: 1px solid white;
+                border-radius: 10px;
+                padding: 10px;
+                margin: 10px;
+            }
+            #add-freind:hover {
+                background-color: white;
+                color: #1e1e1e;
+            }
+            #freind-child {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+            }
+
+    </style>
+</body>
+</html>

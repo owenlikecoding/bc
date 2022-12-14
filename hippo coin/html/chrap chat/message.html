@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://use.typekit.net/vua8wfw.css">
+    <title>Message a user</title>
+</head>
+
+<body>
+    <div id="user-info">
+        <a href="./index.html">
+            <button id="back-button">Back To Home</button>
+        </a>
+    </div>
+    <div id="chat">
+
+    </div>
+    <div id="send-message">
+        <input type="text" id="message-input" placeholder="Say somthing...">
+        <button id="send-button">Send</button>
+    </div>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.12.1/firebase-app.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.12.1/firebase-analytics.js";
+        import { getDatabase, set, ref, get, child, remove, onValue, push } from "https://www.gstatic.com/firebasejs/9.12.1/firebase-database.js"
+        // TODO: Add SDKs for Firebase products that you want to use
+        // https://firebase.google.com/docs/web/setup#available-libraries
+
+        // Your web app's Firebase configuration
+        // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+        const firebaseConfig = {
+            apiKey: "AIzaSyBlgCt1yJFfwKguVfymD5s1uB98Y3mcL2U",
+            authDomain: "burt-coin.firebaseapp.com",
+            projectId: "burt-coin",
+            storageBucket: "burt-coin.appspot.com",
+            messagingSenderId: "942203765915",
+            appId: "1:942203765915:web:ce50f6f18a90216bce723e",
+            measurementId: "G-5CD9ZFYH8K"
+        };
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const analytics = getAnalytics(app);
+        const db = getDatabase(app);
+        const dbref = ref(db);
+        // dom vars
+        const chat = document.getElementById("chat");
+        const messageInput = document.getElementById("message-input");
+        const sendButton = document.getElementById("send-button");
+        const backbutton = document.getElementById("back-button");
+        // event listeners
+        sendButton.addEventListener("click", sendMessage);
+        document.onkeydown = function (e) {
+            if (e.keyCode == 13) {
+                sendMessage();
+            }
+        }
+        // search the url for 
+        var url = window.location.href;
+        var urlsplit = url.split("?");
+        if (urlsplit[1] !== undefined) {
+            var dmid = urlsplit[1];
+            window.localStorage.setItem("dmids", dmid);
+        }
+        // functions
+        function sendMessage() {
+            const message = messageInput.value;
+            if (message.length > 0) {
+                const messageRef = child(dbref, "messages/" + window.localStorage.getItem("dmids"));
+                const newMessageRef = push(messageRef);
+                set(newMessageRef, {
+                    message: message,
+                    sender: window.localStorage.getItem("username"),
+                    timestamp: Date.now()
+                });
+                messageInput.value = "";
+                // scroll to bottom 
+                chat.scrollTop = chat.scrollHeight;
+            }
+        }
+        function getMessages() {
+            const messageRef = child(dbref, "messages/" + window.localStorage.getItem("dmids"));
+            onValue(messageRef, (snapshot) => {
+                const data = snapshot.val();
+                chat.innerHTML = "";
+                snapshot.forEach(childSnapshot => {
+                    var childData = childSnapshot.val();
+                    var childey = childSnapshot.key;
+                    var message = document.createElement("li");
+                    message.innerHTML = `<div class="message ${childData.sender}">
+                        <div class="message-sender">${childData.sender}</div>
+                        <div class="message-text">${childData.message}</div>
+                        </div>
+                        `;
+                    chat.appendChild(message);
+                    // align messages that are not from the user to the left
+                   message.style.textAlign = "right";
+                });
+                // scroll to bottom
+                chat.scrollTop = chat.scrollHeight;
+
+
+            });
+        }
+        getMessages();
+    
+
+
+
+
+    </script>
+    <style>
+        * {
+            font-family: darkmode-mono-off, sans-serif;
+            font-weight: 400;
+            font-style: normal;
+        }
+
+        body {
+            background-color: #1e1e1e;
+            color: white;
+            font-family: darkmode-mono-off, sans-serif;
+            font-weight: 400;
+            font-style: normal;
+        }
+
+        #user-info {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 50px;
+        }
+
+        #back-button {
+            background-color: #1e1e1e;
+            color: white;
+            border: 1px solid white;
+            border-radius: 5px;
+            padding: 10px;
+            font-size: 20px;
+            cursor: pointer;
+        }
+        .message-text {
+            margin-left: 2%;
+        }
+
+        #back-button:hover {
+            background-color: #2e2e2e;
+        }
+        
+
+        #chat {
+            height: 500px;
+            overflow-y: scroll;
+            padding: 10px;
+            list-style: none;
+        }
+
+        #send-message {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 50px;
+        }
+
+        #message-input {
+            width: 80%;
+            height: 30px;
+            border-radius: 5px;
+            border: 1px solid white;
+            background-color: transparent;
+            color: white;
+        }
+
+        #send-button {
+            background-color: #1e1e1e;
+            color: white;
+            border: 1px solid white;
+            border-radius: 5px;
+            padding: 10px;
+            cursor: pointer;
+            margin-left: 10px;
+        }
+
+        #send-button:hover {
+            background-color: #2e2e2e;
+        }
+
+        .message {
+            margin-bottom: 10px;
+            padding: 10px;
+            border-radius: 5px;
+            font-size: 20px;
+            list-style: none;
+            display: flex;
+            width: 100%;
+            justify-content: left;
+        }
+        ul {
+            list-style: none;
+        }
+
+        .user {
+            background-color: #2e2e2e;
+            color: white;
+            text-align: right;
+        }
+
+        .bot {
+            background-color: #1e1e1e;
+            color: white;
+            text-align: left;
+        }
+    </style>
+</body>
+
+</html>
