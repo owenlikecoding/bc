@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portl</title>
+</head>
+
+<body>
+    <iframe src="" frameborder="0" id="yay" style="display: none;"></iframe>
+    <div id="container">
+        <h1>Portl</h1>
+        <div id="enterUrl">
+            <input type="text" id="url" placeholder="enter a url"><button id="sub">Submit</button>
+        </div>
+    </div>
+    <script>
+        const sub = document.getElementById("sub");
+        const url = document.getElementById("url");
+        const yay = document.getElementById("yay");
+        var container = document.getElementById("container");
+        sub.addEventListener("click", () => {
+            console.log(url.value);
+            yay.style.display = "block";
+            yay.src = url.value;
+            container.style.display = "none";
+
+        });
+        // check if the url is focused 
+        url.addEventListener("focus", () => {
+            url.value = "https://";
+        });
+
+    </script>
+    <style>
+        * {
+            margin: none;
+        }
+
+        #container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+
+        #enterUrl {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #url {
+            width: 300px;
+            height: 30px;
+            border-radius: 5px;
+            border: 1px solid black;
+            padding: 5px;
+        }
+
+        #sub {
+            width: 100px;
+            height: 30px;
+            border-radius: 5px;
+            border: 1px solid black;
+            background-color: #fff;
+            margin-top: 10px;
+        }
+
+        iframe {
+            width: 100vw;
+            height: 100vh;
+        }
+    </style>
+</body>
+
+</html>
